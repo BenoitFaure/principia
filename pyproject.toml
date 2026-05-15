@@ -1,0 +1,51 @@
+[project]
+name = "principia"
+version = "0.1.0"
+description = "An interface to generate a Constitution to be used in Supervised Learning and Reinforcement Learning. Alongside generating the datasets for them. Based on Constitutional AI paper by Antropic."
+readme = "README.md"
+authors = [
+    { name = "Benoit Faure", email = "benoit.faure.cesar@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.136.1",
+    "httpx>=0.28.1",
+    "nicegui>=3.12.0",
+    "openai>=2.36.0",
+    "pydantic-settings>=2.14.1",
+]
+
+[project.scripts]
+principia = "principia.main:main"
+
+[build-system]
+requires = ["uv_build>=0.9.30,<0.10.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "furo>=2025.12.19",
+    "pyright>=1.1.409",
+    "pytest>=9.0.3",
+    "ruff>=0.15.13",
+    "sphinx>=9.1.0",
+    "sphinx-autodoc-typehints>=3.10.2",
+]
+docs = [
+    "furo>=2025.12.19",
+    "sphinx>=9.1.0",
+    "sphinx-autodoc-typehints>=3.10.2",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.pyright]
+include = ["src"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
