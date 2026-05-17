@@ -8,9 +8,11 @@ from typing import Any
 from nicegui import ui
 
 from principia.frontend.language import (
+    LearningStage,
     UserSettings,
     get_user_settings,
     save_user_settings,
+    set_user_learning_stage,
     set_user_language,
 )
 from principia.services.translator import translator
@@ -20,16 +22,19 @@ PaneBuilder = Callable[[str], None]
 
 def base_two_pane_layout(
     language: str,
+    learning_stage: LearningStage,
     left_content: PaneBuilder | None = None,
     right_content: PaneBuilder | None = None,
 ) -> None:
     """Render the shared screen-sized two-pane layout."""
-    with ui.element("main").classes("principia-screen"):
+    with ui.element("main").classes(
+        f"principia-screen {_stage_theme_class(learning_stage)}",
+    ):
         with ui.element("div").classes("principia-shell"):
             with ui.element("section").classes(
                 "principia-pane principia-pane-left",
             ):
-                _toolbar(language)
+                _toolbar(language, learning_stage)
                 _pane_content(language, left_content, "home.left.placeholder")
 
             ui.element("div").classes("principia-vertical-separator")
@@ -40,7 +45,7 @@ def base_two_pane_layout(
                 _pane_content(language, right_content, "home.right.placeholder")
 
 
-def _toolbar(language: str) -> None:
+def _toolbar(language: str, learning_stage: LearningStage) -> None:
     settings_dialog = _settings_dialog(language)
 
     with ui.element("div").classes("principia-toolbar-shell"):
@@ -68,9 +73,10 @@ def _toolbar(language: str) -> None:
                                 on_click=_language_selector(language_code),
                             )
 
-            ui.button(_translate("toolbar.supervised_learning", language)).classes(
-                "principia-toolbar-button",
-            ).props("flat")
+            ui.button(
+                _stage_button_label(language, learning_stage),
+                on_click=_learning_stage_selector(_opposite_stage(learning_stage)),
+            ).classes("principia-toolbar-button").props("flat")
 
         ui.element("div").classes("principia-toolbar-divider")
 
@@ -120,7 +126,14 @@ def _settings_dialog(language: str) -> Any:
 
 def _save_settings(dialog: Any, language: str, openai_api_key: str) -> None:
     previous_language = get_user_settings().language
-    save_user_settings(UserSettings(language=language, openai_api_key=openai_api_key))
+    settings = get_user_settings()
+    save_user_settings(
+        UserSettings(
+            language=language,
+            openai_api_key=openai_api_key,
+            learning_stage=settings.learning_stage,
+        ),
+    )
     dialog.close()
     if language != previous_language:
         ui.run_javascript("window.location.reload()")
@@ -147,6 +160,32 @@ def _language_selector(language: str) -> Callable[[], None]:
         ui.run_javascript("window.location.reload()")
 
     return select_language
+
+
+def _learning_stage_selector(learning_stage: LearningStage) -> Callable[[], None]:
+    def select_learning_stage() -> None:
+        set_user_learning_stage(learning_stage)
+        ui.run_javascript("window.location.reload()")
+
+    return select_learning_stage
+
+
+def _opposite_stage(learning_stage: LearningStage) -> LearningStage:
+    if learning_stage == LearningStage.SUPERVISED:
+        return LearningStage.REINFORCEMENT
+    return LearningStage.SUPERVISED
+
+
+def _stage_button_label(language: str, learning_stage: LearningStage) -> str:
+    if learning_stage == LearningStage.SUPERVISED:
+        return _translate("toolbar.supervised_learning", language)
+    return _translate("toolbar.reinforcement_learning", language)
+
+
+def _stage_theme_class(learning_stage: LearningStage) -> str:
+    if learning_stage == LearningStage.REINFORCEMENT:
+        return "principia-stage-reinforcement-learning"
+    return "principia-stage-supervised-learning"
 
 
 def _translate(element: str, language: str) -> str:

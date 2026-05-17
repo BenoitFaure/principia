@@ -1,4 +1,4 @@
-"""Default supervised learning workspace."""
+"""Default reinforcement learning workspace."""
 
 from __future__ import annotations
 
@@ -10,13 +10,13 @@ from principia.frontend.theme import apply_theme
 from principia.services.translator import translator
 
 
-def supervised_learning_main() -> None:
-    """Render the supervised learning main window."""
+def reinforcement_learning_main() -> None:
+    """Render the reinforcement learning main window."""
     language = get_user_language()
     apply_theme()
     base_two_pane_layout(
         language,
-        LearningStage.SUPERVISED,
+        LearningStage.REINFORCEMENT,
         left_content=_empty_workspace,
         right_content=_constitution_workspace,
     )
@@ -28,6 +28,9 @@ def _empty_workspace(language: str) -> None:
 
 def _constitution_workspace(language: str) -> None:
     ui.label(
-        translator.translate("supervised_learning_main.constitution_title", language),
+        translator.translate(
+            "reinforcement_learning_main.constitution_title",
+            language,
+        ),
     ).classes("principia-window-title")
     ui.element("ul").classes("principia-constitution-list")

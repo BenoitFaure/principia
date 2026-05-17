@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+from enum import StrEnum
 
 from nicegui import app
 
@@ -11,6 +12,14 @@ from principia.services.translator import FALLBACK_LANGUAGE, translator
 SETTINGS_STORAGE_KEY = "settings"
 LANGUAGE_STORAGE_KEY = "language"
 OPENAI_API_KEY_STORAGE_KEY = "openai_api_key"
+LEARNING_STAGE_STORAGE_KEY = "learning_stage"
+
+
+class LearningStage(StrEnum):
+    """Learning stages available in the main workspace."""
+
+    SUPERVISED = "supervised_learning"
+    REINFORCEMENT = "reinforcement_learning"
 
 
 @dataclass(frozen=True)
@@ -19,6 +28,7 @@ class UserSettings:
 
     language: str = FALLBACK_LANGUAGE
     openai_api_key: str = ""
+    learning_stage: LearningStage = LearningStage.SUPERVISED
 
 
 def get_user_settings() -> UserSettings:
@@ -28,9 +38,14 @@ def get_user_settings() -> UserSettings:
     if isinstance(raw_settings, dict):
         language = raw_settings.get(LANGUAGE_STORAGE_KEY, FALLBACK_LANGUAGE)
         openai_api_key = raw_settings.get(OPENAI_API_KEY_STORAGE_KEY, "")
+        learning_stage = raw_settings.get(
+            LEARNING_STAGE_STORAGE_KEY,
+            LearningStage.SUPERVISED.value,
+        )
     else:
         language = FALLBACK_LANGUAGE
         openai_api_key = ""
+        learning_stage = LearningStage.SUPERVISED.value
 
     legacy_language = app.storage.user.get(LANGUAGE_STORAGE_KEY)
     if (
@@ -43,6 +58,7 @@ def get_user_settings() -> UserSettings:
     settings = UserSettings(
         language=_validated_language(language),
         openai_api_key=openai_api_key if isinstance(openai_api_key, str) else "",
+        learning_stage=_validated_learning_stage(learning_stage),
     )
     save_user_settings(settings)
     return settings
@@ -50,12 +66,14 @@ def get_user_settings() -> UserSettings:
 
 def save_user_settings(settings: UserSettings) -> None:
     """Persist user settings in NiceGUI user storage."""
-    app.storage.user[SETTINGS_STORAGE_KEY] = asdict(
-        UserSettings(
-            language=_validated_language(settings.language),
-            openai_api_key=settings.openai_api_key,
-        ),
+    validated_settings = UserSettings(
+        language=_validated_language(settings.language),
+        openai_api_key=settings.openai_api_key,
+        learning_stage=_validated_learning_stage(settings.learning_stage),
     )
+    raw_settings = asdict(validated_settings)
+    raw_settings[LEARNING_STAGE_STORAGE_KEY] = validated_settings.learning_stage.value
+    app.storage.user[SETTINGS_STORAGE_KEY] = raw_settings
 
 
 def get_user_language() -> str:
@@ -70,6 +88,24 @@ def set_user_language(language: str) -> None:
         UserSettings(
             language=language,
             openai_api_key=settings.openai_api_key,
+            learning_stage=settings.learning_stage,
+        ),
+    )
+
+
+def get_user_learning_stage() -> LearningStage:
+    """Return the user's stored learning stage."""
+    return get_user_settings().learning_stage
+
+
+def set_user_learning_stage(learning_stage: LearningStage) -> None:
+    """Persist the user's learning stage choice in NiceGUI user storage."""
+    settings = get_user_settings()
+    save_user_settings(
+        UserSettings(
+            language=settings.language,
+            openai_api_key=settings.openai_api_key,
+            learning_stage=learning_stage,
         ),
     )
 
@@ -78,3 +114,14 @@ def _validated_language(language: object) -> str:
     if isinstance(language, str) and language in translator.available_languages():
         return language
     return FALLBACK_LANGUAGE
+
+
+def _validated_learning_stage(learning_stage: object) -> LearningStage:
+    if isinstance(learning_stage, LearningStage):
+        return learning_stage
+    if isinstance(learning_stage, str):
+        try:
+            return LearningStage(learning_stage)
+        except ValueError:
+            pass
+    return LearningStage.SUPERVISED

@@ -57,6 +57,104 @@ body.body--dark {
   --principia-shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
 }
 
+.principia-stage-supervised-learning {
+  --principia-bg: #e5f5e8;
+  --principia-pane: #effaf1;
+  --principia-pane-muted: #d7eddb;
+  --principia-text: #123d1f;
+  --principia-border: #7dbb85;
+  --principia-border-strong: #3d7d49;
+  --principia-control: #ffffff;
+  --principia-control-hover: #d7efdc;
+  --principia-shadow: 0 18px 50px rgba(24, 81, 38, 0.12);
+}
+
+.principia-stage-reinforcement-learning {
+  --principia-bg: #eeeeee;
+  --principia-pane: #f8f8f8;
+  --principia-pane-muted: #dddddd;
+  --principia-text: #252525;
+  --principia-border: #a9a9a9;
+  --principia-border-strong: #696969;
+  --principia-control: #ffffff;
+  --principia-control-hover: #e1e1e1;
+  --principia-shadow: 0 18px 50px rgba(60, 60, 60, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  .principia-stage-supervised-learning {
+    --principia-bg: #06190d;
+    --principia-pane: #0b2414;
+    --principia-pane-muted: #10301b;
+    --principia-text: #d7f5dc;
+    --principia-border: #346a3f;
+    --principia-border-strong: #7fd28d;
+    --principia-control: #13301d;
+    --principia-control-hover: #1b4529;
+    --principia-shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+  }
+
+  .principia-stage-reinforcement-learning {
+    --principia-bg: #171717;
+    --principia-pane: #222222;
+    --principia-pane-muted: #2f2f2f;
+    --principia-text: #eeeeee;
+    --principia-border: #5c5c5c;
+    --principia-border-strong: #c4c4c4;
+    --principia-control: #292929;
+    --principia-control-hover: #3a3a3a;
+    --principia-shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+  }
+}
+
+body.body--light .principia-stage-supervised-learning {
+  --principia-bg: #e5f5e8;
+  --principia-pane: #effaf1;
+  --principia-pane-muted: #d7eddb;
+  --principia-text: #123d1f;
+  --principia-border: #7dbb85;
+  --principia-border-strong: #3d7d49;
+  --principia-control: #ffffff;
+  --principia-control-hover: #d7efdc;
+  --principia-shadow: 0 18px 50px rgba(24, 81, 38, 0.12);
+}
+
+body.body--light .principia-stage-reinforcement-learning {
+  --principia-bg: #eeeeee;
+  --principia-pane: #f8f8f8;
+  --principia-pane-muted: #dddddd;
+  --principia-text: #252525;
+  --principia-border: #a9a9a9;
+  --principia-border-strong: #696969;
+  --principia-control: #ffffff;
+  --principia-control-hover: #e1e1e1;
+  --principia-shadow: 0 18px 50px rgba(60, 60, 60, 0.12);
+}
+
+body.body--dark .principia-stage-supervised-learning {
+  --principia-bg: #06190d;
+  --principia-pane: #0b2414;
+  --principia-pane-muted: #10301b;
+  --principia-text: #d7f5dc;
+  --principia-border: #346a3f;
+  --principia-border-strong: #7fd28d;
+  --principia-control: #13301d;
+  --principia-control-hover: #1b4529;
+  --principia-shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+}
+
+body.body--dark .principia-stage-reinforcement-learning {
+  --principia-bg: #171717;
+  --principia-pane: #222222;
+  --principia-pane-muted: #2f2f2f;
+  --principia-text: #eeeeee;
+  --principia-border: #5c5c5c;
+  --principia-border-strong: #c4c4c4;
+  --principia-control: #292929;
+  --principia-control-hover: #3a3a3a;
+  --principia-shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+}
+
 body,
 .nicegui-content {
   background: var(--principia-bg);
