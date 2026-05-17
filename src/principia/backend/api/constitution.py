@@ -25,3 +25,12 @@ def update_constitution(
 ) -> ConstitutionElement:
     constitution_file.update(element)
     return element
+
+
+@router.delete("/{constitution_hash}")
+def delete_constitution(
+    constitution_hash: str,
+    constitution_file: Annotated[ConstitutionFile, Depends(get_constitution_file)],
+) -> dict[str, str]:
+    constitution_file.delete(constitution_hash)
+    return {"constitution_hash": constitution_hash}

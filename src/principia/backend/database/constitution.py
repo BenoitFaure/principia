@@ -27,3 +27,6 @@ class ConstitutionFile(WorkspaceJsonFile[ConstitutionElement]):
 
     def update(self, element: ConstitutionElement) -> None:
         self._update(element)
+
+    def delete(self, constitution_hash: str) -> None:
+        self._delete(constitution_hash)

@@ -51,6 +51,18 @@ class WorkspaceJsonFile[ModelT: BaseModel]:
         elements.append(element)
         self._write_all(elements)
 
+    def _delete(self, element_hash: str) -> None:
+        if self._hash_field is None:
+            msg = "Deletes require a configured hash field."
+            raise RuntimeError(msg)
+
+        elements = [
+            element
+            for element in self._read()
+            if getattr(element, self._hash_field) != element_hash
+        ]
+        self._write_all(elements)
+
     def _write_all(self, elements: list[ModelT]) -> None:
         self._path.parent.mkdir(parents=True, exist_ok=True)
         data = [element.model_dump() for element in elements]

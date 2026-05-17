@@ -4,7 +4,11 @@ from __future__ import annotations
 
 from nicegui import ui
 
+from principia.backend.database import ConstitutionElement, ConstitutionFile
 from principia.frontend.components.base_layout import base_two_pane_layout
+from principia.frontend.components.supervised_learning_constitution_edit import (
+    supervised_learning_constitution_edit,
+)
 from principia.frontend.language import LearningStage, get_user_language
 from principia.frontend.theme import apply_theme
 from principia.services.translator import translator
@@ -30,4 +34,28 @@ def _constitution_workspace(language: str) -> None:
     ui.label(
         translator.translate("supervised_learning_main.constitution_title", language),
     ).classes("principia-window-title")
-    ui.element("ul").classes("principia-constitution-list")
+    with ui.element("div").classes("principia-constitution-stack"):
+        for element in ConstitutionFile().read():
+            _constitution_widget(language, element)
+
+        create_dialog = supervised_learning_constitution_edit(language, None)
+        ui.button("+", on_click=create_dialog.open).classes(
+            "principia-constitution-add",
+        ).props("flat")
+
+
+def _constitution_widget(language: str, element: ConstitutionElement) -> None:
+    edit_dialog = supervised_learning_constitution_edit(language, element)
+    preview = element.critique_prompt or translator.translate(
+        "supervised_learning_main.empty_critique_prompt",
+        language,
+    )
+
+    with (
+        ui.button(on_click=edit_dialog.open)
+        .classes(
+            "principia-constitution-widget",
+        )
+        .props("flat no-caps")
+    ):
+        ui.label(preview).classes("principia-constitution-critique")

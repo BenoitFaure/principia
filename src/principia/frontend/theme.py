@@ -345,10 +345,122 @@ body,
   text-align: center;
 }
 
-.principia-constitution-list {
-  margin: 24px 0 0;
-  padding-left: 1.2rem;
+.principia-constitution-stack {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 26px;
+}
+
+.principia-constitution-widget {
+  width: 100%;
+  min-height: 108px;
+  border: 1px solid var(--principia-border);
+  border-radius: 18px;
+  background: var(--principia-pane-muted);
   color: var(--principia-text);
+  padding: 16px 18px;
+  text-align: left;
+}
+
+.principia-constitution-widget:hover {
+  border-color: var(--principia-border-strong);
+  background: var(--principia-control-hover);
+}
+
+.principia-constitution-widget .q-btn__content {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.principia-constitution-critique {
+  width: 100%;
+  color: var(--principia-text);
+  display: -webkit-box;
+  line-clamp: 4;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
+  line-height: 1.45;
+}
+
+.principia-constitution-add {
+  width: 100%;
+  min-height: 58px;
+  border: 1px dashed var(--principia-border-strong);
+  border-radius: 18px;
+  color: var(--principia-text);
+  font-size: 1.8rem;
+}
+
+.principia-constitution-add:hover {
+  background: var(--principia-control-hover);
+}
+
+.principia-constitution-edit-dialog .q-dialog__inner {
+  padding: 24px;
+}
+
+.principia-constitution-edit-card {
+  width: min(760px, calc(100vw - 48px));
+  border: 1px solid var(--principia-border-strong);
+  border-radius: 22px;
+  background: var(--principia-pane);
+  color: var(--principia-text);
+  box-shadow: var(--principia-shadow);
+  padding: 24px;
+  gap: 18px;
+}
+
+.principia-constitution-edit-title {
+  color: var(--principia-text);
+  font-size: 1.25rem;
+  font-weight: 650;
+}
+
+.principia-constitution-edit-field {
+  width: 100%;
+}
+
+.principia-constitution-edit-field textarea {
+  min-height: 140px;
+}
+
+.principia-constitution-edit-card .q-field__label,
+.principia-constitution-edit-card .q-field__native,
+.principia-constitution-edit-card .q-field__control {
+  color: var(--principia-text);
+}
+
+.principia-constitution-edit-card .q-field__control::before {
+  border-color: var(--principia-border);
+}
+
+.principia-constitution-edit-card .q-field__control::after {
+  background: var(--principia-border-strong);
+}
+
+.principia-constitution-edit-actions {
+  width: 100%;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.principia-constitution-edit-button {
+  border-radius: 12px;
+  min-width: 96px;
+}
+
+.principia-constitution-edit-save {
+  background: #2f9e44;
+  color: #ffffff;
+}
+
+.principia-constitution-edit-delete {
+  background: #c92a2a;
+  color: #ffffff;
 }
 
 .principia-placeholder {

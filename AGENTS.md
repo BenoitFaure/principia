@@ -14,6 +14,7 @@
 - Format: `uv run ruff format .`; check only with `uv run ruff format . --check`.
 - Typecheck: `uv run pyright` (`pyproject.toml` includes only `src`).
 - Tests: `uv run pytest`; focused tests use normal pytest selectors such as `uv run pytest tests/path.py::test_name`.
+- Test files should mirror the `src/` package structure under `tests/`.
 - Docs: `uv run sphinx-build docs docs/_build/html`; docs deps are in the `docs` group if not already synced.
 
 ## Repo-Specific Gotchas

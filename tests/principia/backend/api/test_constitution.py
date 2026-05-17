@@ -76,3 +76,46 @@ def test_update_constitution_replaces_matching_hash(tmp_path: Path) -> None:
     assert ConstitutionFile(workspace_root=tmp_path).read() == [
         ConstitutionElement.model_validate(payload)
     ]
+
+
+def test_delete_constitution_removes_matching_hash(tmp_path: Path) -> None:
+    constitution_file = ConstitutionFile(workspace_root=tmp_path)
+    keep = ConstitutionElement(
+        constitution_hash="constitution-keep",
+        critique_prompt="Keep critique.",
+        response_prompt="Keep response.",
+        example_hashes=[],
+    )
+    delete = ConstitutionElement(
+        constitution_hash="constitution-delete",
+        critique_prompt="Delete critique.",
+        response_prompt="Delete response.",
+        example_hashes=[],
+    )
+    constitution_file.update(keep)
+    constitution_file.update(delete)
+    client = create_client(tmp_path)
+
+    response = client.delete("/api/supervised/constitution/constitution-delete")
+
+    assert response.status_code == 200
+    assert response.json() == {"constitution_hash": "constitution-delete"}
+    assert ConstitutionFile(workspace_root=tmp_path).read() == [keep]
+
+
+def test_delete_constitution_missing_hash_does_nothing(tmp_path: Path) -> None:
+    constitution_file = ConstitutionFile(workspace_root=tmp_path)
+    element = ConstitutionElement(
+        constitution_hash="constitution-1",
+        critique_prompt="Critique.",
+        response_prompt="Response.",
+        example_hashes=[],
+    )
+    constitution_file.update(element)
+    client = create_client(tmp_path)
+
+    response = client.delete("/api/supervised/constitution/missing")
+
+    assert response.status_code == 200
+    assert response.json() == {"constitution_hash": "missing"}
+    assert ConstitutionFile(workspace_root=tmp_path).read() == [element]
