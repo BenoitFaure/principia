@@ -1,4 +1,12 @@
 {
   "app.title": "Principia",
+  "home.left.placeholder": "Espace de travail gauche",
+  "home.right.placeholder": "Espace de travail droit",
+  "language.en": "Anglais",
+  "language.fr": "Français",
+  "toolbar.information": "?",
+  "toolbar.language": "Langue",
+  "toolbar.settings": "⚙️",
+  "toolbar.supervised_learning": "SL",
   "navigation.language": "Langue"
 }

@@ -7,6 +7,7 @@ A Constitutional AI constitution editor.
    :maxdepth: 2
    :caption: Guides
 
+   agentic/frontend/layout
    agentic/services/translator
 
 .. toctree::
