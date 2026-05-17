@@ -16,6 +16,7 @@ from principia.frontend.language import (
     set_user_language,
     set_user_learning_stage,
 )
+from principia.services.openai_provider import openai_provider
 from principia.services.translator import translator
 
 PaneBuilder = Callable[[str], None]
@@ -84,6 +85,7 @@ def _toolbar(language: str, learning_stage: LearningStage) -> None:
 
 def _settings_dialog(language: str) -> Any:
     settings = get_user_settings()
+    openai_provider.update_api_key(settings.openai_api_key)
     language_options = {
         language_code: _language_label(language_code)
         for language_code in translator.available_languages()
@@ -161,6 +163,7 @@ def _save_settings(
             theme_mode=ThemeMode(theme_mode),
         ),
     )
+    openai_provider.update_api_key(openai_api_key)
     dialog.close()
     if (
         language != previous_settings.language
