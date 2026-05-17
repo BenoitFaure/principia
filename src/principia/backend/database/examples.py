@@ -9,8 +9,6 @@ class ExampleElement(BaseModel):
     example_hash: str
     user: str
     bot: str
-    critique: str
-    response: str
 
 
 class ExamplesFile(WorkspaceJsonFile[ExampleElement]):
@@ -28,3 +26,6 @@ class ExamplesFile(WorkspaceJsonFile[ExampleElement]):
 
     def update(self, element: ExampleElement) -> None:
         self._update(element)
+
+    def delete(self, example_hash: str) -> None:
+        self._delete(example_hash)

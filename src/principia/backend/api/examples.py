@@ -25,3 +25,12 @@ def update_examples(
 ) -> ExampleElement:
     examples_file.update(element)
     return element
+
+
+@router.delete("/{example_hash}")
+def delete_examples(
+    example_hash: str,
+    examples_file: Annotated[ExamplesFile, Depends(get_examples_file)],
+) -> dict[str, str]:
+    examples_file.delete(example_hash)
+    return {"example_hash": example_hash}

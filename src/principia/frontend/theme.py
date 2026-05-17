@@ -345,12 +345,69 @@ body,
   text-align: center;
 }
 
+.principia-window-title-button {
+  min-height: auto;
+  border-radius: 0;
+  padding: 0;
+}
+
+.principia-window-title-button .q-btn__content {
+  width: 100%;
+  justify-content: center;
+}
+
+.principia-edit-navigation-title {
+  color: var(--principia-text);
+  width: 100%;
+  justify-content: flex-start;
+  border-radius: 0;
+  font-size: 1rem;
+  font-weight: 650;
+  padding: 0 0 18px;
+}
+
 .principia-constitution-stack {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 14px;
   margin-top: 26px;
+}
+
+.principia-example-stack {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 26px;
+}
+
+.principia-link-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 10px;
+  align-items: stretch;
+}
+
+.principia-link-marker {
+  width: 44px;
+  min-height: 44px;
+  align-self: start;
+  border: 1px solid var(--principia-border);
+  border-radius: 999px;
+  color: var(--principia-text);
+  background: var(--principia-control);
+}
+
+.principia-link-marker:hover,
+.principia-link-marker-dirty {
+  border-color: var(--principia-border-strong);
+  background: var(--principia-control-hover);
+}
+
+.principia-link-marker-muted {
+  opacity: 0.52;
 }
 
 .principia-constitution-widget {
@@ -367,6 +424,12 @@ body,
 .principia-constitution-widget:hover {
   border-color: var(--principia-border-strong);
   background: var(--principia-control-hover);
+}
+
+.principia-link-widget-selected {
+  border-color: var(--principia-border-strong);
+  background: var(--principia-control-hover);
+  box-shadow: inset 0 0 0 1px var(--principia-border-strong);
 }
 
 .principia-constitution-widget .q-btn__content {
@@ -395,6 +458,69 @@ body,
   font-size: 1.8rem;
 }
 
+.principia-example-widget {
+  width: 100%;
+  min-height: 108px;
+  border: 1px solid var(--principia-border);
+  border-radius: 18px;
+  background: var(--principia-pane-muted);
+  color: var(--principia-text);
+  padding: 16px 18px;
+  text-align: left;
+}
+
+.principia-example-widget:hover {
+  border-color: var(--principia-border-strong);
+  background: var(--principia-control-hover);
+}
+
+.principia-example-widget .q-btn__content {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.principia-example-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.principia-example-user {
+  width: 100%;
+  color: var(--principia-text);
+  display: -webkit-box;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
+  line-height: 1.45;
+}
+
+.principia-example-hash {
+  width: 100%;
+  color: var(--principia-text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  opacity: 0.68;
+  overflow-wrap: anywhere;
+}
+
+.principia-example-add {
+  width: 100%;
+  min-height: 58px;
+  border: 1px dashed var(--principia-border-strong);
+  border-radius: 18px;
+  color: var(--principia-text);
+  font-size: 1.8rem;
+}
+
+.principia-example-add:hover {
+  background: var(--principia-control-hover);
+}
+
 .principia-constitution-add:hover {
   background: var(--principia-control-hover);
 }
@@ -403,7 +529,22 @@ body,
   padding: 24px;
 }
 
+.principia-example-edit-dialog .q-dialog__inner {
+  padding: 24px;
+}
+
 .principia-constitution-edit-card {
+  width: min(760px, calc(100vw - 48px));
+  border: 1px solid var(--principia-border-strong);
+  border-radius: 22px;
+  background: var(--principia-pane);
+  color: var(--principia-text);
+  box-shadow: var(--principia-shadow);
+  padding: 24px;
+  gap: 18px;
+}
+
+.principia-example-edit-card {
   width: min(760px, calc(100vw - 48px));
   border: 1px solid var(--principia-border-strong);
   border-radius: 22px;
@@ -420,7 +561,17 @@ body,
   font-weight: 650;
 }
 
+.principia-example-edit-title {
+  color: var(--principia-text);
+  font-size: 1.25rem;
+  font-weight: 650;
+}
+
 .principia-constitution-edit-field {
+  width: 100%;
+}
+
+.principia-example-edit-field {
   width: 100%;
 }
 
@@ -428,21 +579,36 @@ body,
   min-height: 140px;
 }
 
+.principia-example-edit-field textarea {
+  min-height: 110px;
+}
+
 .principia-constitution-edit-card .q-field__label,
 .principia-constitution-edit-card .q-field__native,
-.principia-constitution-edit-card .q-field__control {
+.principia-constitution-edit-card .q-field__control,
+.principia-example-edit-card .q-field__label,
+.principia-example-edit-card .q-field__native,
+.principia-example-edit-card .q-field__control {
   color: var(--principia-text);
 }
 
-.principia-constitution-edit-card .q-field__control::before {
+.principia-constitution-edit-card .q-field__control::before,
+.principia-example-edit-card .q-field__control::before {
   border-color: var(--principia-border);
 }
 
-.principia-constitution-edit-card .q-field__control::after {
+.principia-constitution-edit-card .q-field__control::after,
+.principia-example-edit-card .q-field__control::after {
   background: var(--principia-border-strong);
 }
 
 .principia-constitution-edit-actions {
+  width: 100%;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.principia-example-edit-actions {
   width: 100%;
   justify-content: flex-end;
   gap: 12px;
@@ -453,12 +619,27 @@ body,
   min-width: 96px;
 }
 
+.principia-example-edit-button {
+  border-radius: 12px;
+  min-width: 96px;
+}
+
 .principia-constitution-edit-save {
   background: #2f9e44;
   color: #ffffff;
 }
 
+.principia-example-edit-save {
+  background: #2f9e44;
+  color: #ffffff;
+}
+
 .principia-constitution-edit-delete {
+  background: #c92a2a;
+  color: #ffffff;
+}
+
+.principia-example-edit-delete {
   background: #c92a2a;
   color: #ffffff;
 }

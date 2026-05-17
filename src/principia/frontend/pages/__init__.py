@@ -6,6 +6,9 @@ from principia.frontend.language import LearningStage, get_user_learning_stage
 from principia.frontend.pages.reinforcement_learning_main import (
     reinforcement_learning_main,
 )
+from principia.frontend.pages.supervised_learning_constitution_edit import (
+    supervised_learning_constitution_edit_page,
+)
 from principia.frontend.pages.supervised_learning_main import supervised_learning_main
 
 
@@ -19,3 +22,7 @@ def register_pages() -> None:
             return
 
         supervised_learning_main()
+
+    @ui.page("/supervised/constitution/edit")
+    def supervised_constitution_edit_page() -> None:
+        supervised_learning_constitution_edit_page()

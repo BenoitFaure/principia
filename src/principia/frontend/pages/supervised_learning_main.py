@@ -31,9 +31,14 @@ def _empty_workspace(language: str) -> None:
 
 
 def _constitution_workspace(language: str) -> None:
-    ui.label(
+    ui.button(
         translator.translate("supervised_learning_main.constitution_title", language),
-    ).classes("principia-window-title")
+        on_click=lambda: ui.run_javascript(
+            "window.location.href = '/supervised/constitution/edit'",
+        ),
+    ).classes("principia-window-title principia-window-title-button").props(
+        "flat no-caps",
+    )
     with ui.element("div").classes("principia-constitution-stack"):
         for element in ConstitutionFile().read():
             _constitution_widget(language, element)
