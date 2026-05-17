@@ -121,7 +121,7 @@ body,
 
 .principia-toolbar {
   display: flex;
-  gap: 10px;
+  gap: 0;
   align-items: center;
 }
 
@@ -137,12 +137,17 @@ body,
 }
 
 .principia-toolbar-button {
-  min-width: 44px;
+  min-width: 38px;
   height: 42px;
-  border: 1px solid var(--principia-border);
-  border-radius: 999px;
+  border: none;
+  border-radius: 0;
   background: transparent;
   color: var(--principia-text);
+  padding: 0 10px;
+}
+
+.principia-toolbar-button + .principia-toolbar-button {
+  border-left: 1px solid var(--principia-border-strong);
 }
 
 .principia-toolbar-button:hover {
@@ -150,7 +155,7 @@ body,
 }
 
 .principia-language-button {
-  min-width: 116px;
+  min-width: 46px;
 }
 
 .principia-language-menu {
@@ -162,7 +167,66 @@ body,
 
 .principia-language-scroll {
   max-height: 160px;
-  min-width: 160px;
+  min-width: 86px;
+}
+
+.principia-settings-dialog .q-dialog__inner {
+  padding: 24px;
+}
+
+.q-dialog__backdrop {
+  background: rgba(6, 21, 13, 0.46);
+}
+
+.principia-settings-card {
+  width: min(420px, calc(100vw - 48px));
+  border: 1px solid var(--principia-border-strong);
+  border-radius: 22px;
+  background: var(--principia-pane);
+  color: var(--principia-text);
+  box-shadow: var(--principia-shadow);
+  padding: 24px;
+  gap: 18px;
+}
+
+.principia-settings-title {
+  color: var(--principia-text);
+  font-size: 1.25rem;
+  font-weight: 650;
+}
+
+.principia-settings-control {
+  width: 100%;
+}
+
+.principia-settings-card .q-field__label,
+.principia-settings-card .q-field__native,
+.principia-settings-card .q-field__append,
+.principia-settings-card .q-field__control {
+  color: var(--principia-text);
+}
+
+.principia-settings-card .q-field__control::before {
+  border-color: var(--principia-border);
+}
+
+.principia-settings-card .q-field__control::after {
+  background: var(--principia-border-strong);
+}
+
+.principia-settings-actions {
+  width: 100%;
+  justify-content: flex-end;
+  gap: 0;
+}
+
+.principia-settings-button {
+  border-radius: 0;
+  color: var(--principia-text);
+}
+
+.principia-settings-save {
+  border-left: 1px solid var(--principia-border-strong);
 }
 
 .principia-pane-content {
