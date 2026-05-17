@@ -13,6 +13,7 @@ SETTINGS_STORAGE_KEY = "settings"
 LANGUAGE_STORAGE_KEY = "language"
 OPENAI_API_KEY_STORAGE_KEY = "openai_api_key"
 LEARNING_STAGE_STORAGE_KEY = "learning_stage"
+THEME_MODE_STORAGE_KEY = "theme_mode"
 
 
 class LearningStage(StrEnum):
@@ -22,6 +23,13 @@ class LearningStage(StrEnum):
     REINFORCEMENT = "reinforcement_learning"
 
 
+class ThemeMode(StrEnum):
+    """Theme modes available in the main workspace."""
+
+    LIGHT = "light"
+    DARK = "dark"
+
+
 @dataclass(frozen=True)
 class UserSettings:
     """Settings persisted in NiceGUI user storage."""
@@ -29,6 +37,7 @@ class UserSettings:
     language: str = FALLBACK_LANGUAGE
     openai_api_key: str = ""
     learning_stage: LearningStage = LearningStage.SUPERVISED
+    theme_mode: ThemeMode = ThemeMode.LIGHT
 
 
 def get_user_settings() -> UserSettings:
@@ -42,10 +51,12 @@ def get_user_settings() -> UserSettings:
             LEARNING_STAGE_STORAGE_KEY,
             LearningStage.SUPERVISED.value,
         )
+        theme_mode = raw_settings.get(THEME_MODE_STORAGE_KEY, ThemeMode.LIGHT.value)
     else:
         language = FALLBACK_LANGUAGE
         openai_api_key = ""
         learning_stage = LearningStage.SUPERVISED.value
+        theme_mode = ThemeMode.LIGHT.value
 
     legacy_language = app.storage.user.get(LANGUAGE_STORAGE_KEY)
     if (
@@ -59,6 +70,7 @@ def get_user_settings() -> UserSettings:
         language=_validated_language(language),
         openai_api_key=openai_api_key if isinstance(openai_api_key, str) else "",
         learning_stage=_validated_learning_stage(learning_stage),
+        theme_mode=_validated_theme_mode(theme_mode),
     )
     save_user_settings(settings)
     return settings
@@ -70,9 +82,11 @@ def save_user_settings(settings: UserSettings) -> None:
         language=_validated_language(settings.language),
         openai_api_key=settings.openai_api_key,
         learning_stage=_validated_learning_stage(settings.learning_stage),
+        theme_mode=_validated_theme_mode(settings.theme_mode),
     )
     raw_settings = asdict(validated_settings)
     raw_settings[LEARNING_STAGE_STORAGE_KEY] = validated_settings.learning_stage.value
+    raw_settings[THEME_MODE_STORAGE_KEY] = validated_settings.theme_mode.value
     app.storage.user[SETTINGS_STORAGE_KEY] = raw_settings
 
 
@@ -89,6 +103,7 @@ def set_user_language(language: str) -> None:
             language=language,
             openai_api_key=settings.openai_api_key,
             learning_stage=settings.learning_stage,
+            theme_mode=settings.theme_mode,
         ),
     )
 
@@ -106,8 +121,14 @@ def set_user_learning_stage(learning_stage: LearningStage) -> None:
             language=settings.language,
             openai_api_key=settings.openai_api_key,
             learning_stage=learning_stage,
+            theme_mode=settings.theme_mode,
         ),
     )
+
+
+def get_user_theme_mode() -> ThemeMode:
+    """Return the user's stored theme mode."""
+    return get_user_settings().theme_mode
 
 
 def _validated_language(language: object) -> str:
@@ -125,3 +146,14 @@ def _validated_learning_stage(learning_stage: object) -> LearningStage:
         except ValueError:
             pass
     return LearningStage.SUPERVISED
+
+
+def _validated_theme_mode(theme_mode: object) -> ThemeMode:
+    if isinstance(theme_mode, ThemeMode):
+        return theme_mode
+    if isinstance(theme_mode, str):
+        try:
+            return ThemeMode(theme_mode)
+        except ValueError:
+            pass
+    return ThemeMode.LIGHT

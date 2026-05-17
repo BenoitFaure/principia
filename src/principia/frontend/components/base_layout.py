@@ -9,11 +9,12 @@ from nicegui import ui
 
 from principia.frontend.language import (
     LearningStage,
+    ThemeMode,
     UserSettings,
     get_user_settings,
     save_user_settings,
-    set_user_learning_stage,
     set_user_language,
+    set_user_learning_stage,
 )
 from principia.services.translator import translator
 
@@ -87,6 +88,13 @@ def _settings_dialog(language: str) -> Any:
         language_code: _language_label(language_code)
         for language_code in translator.available_languages()
     }
+    learning_stage_options = {
+        stage.value: _learning_stage_label(stage, language) for stage in LearningStage
+    }
+    theme_mode_options = {
+        theme_mode.value: _theme_mode_label(theme_mode, language)
+        for theme_mode in ThemeMode
+    }
 
     with ui.dialog().classes("principia-settings-dialog") as dialog:
         with ui.card().classes("principia-settings-card"):
@@ -97,6 +105,16 @@ def _settings_dialog(language: str) -> Any:
                 language_options,
                 value=settings.language,
                 label=_translate("settings.language", language),
+            ).classes("principia-settings-control")
+            learning_stage_select = ui.select(
+                learning_stage_options,
+                value=settings.learning_stage.value,
+                label=_translate("settings.learning_stage", language),
+            ).classes("principia-settings-control")
+            theme_mode_select = ui.select(
+                theme_mode_options,
+                value=settings.theme_mode.value,
+                label=_translate("settings.theme_mode", language),
             ).classes("principia-settings-control")
             api_key_input = ui.input(
                 label=_translate("settings.openai_api_key", language),
@@ -115,6 +133,8 @@ def _settings_dialog(language: str) -> Any:
                     on_click=lambda: _save_settings(
                         dialog,
                         str(language_select.value),
+                        str(learning_stage_select.value),
+                        str(theme_mode_select.value),
                         str(api_key_input.value or ""),
                     ),
                 ).classes("principia-settings-button principia-settings-save").props(
@@ -124,18 +144,29 @@ def _settings_dialog(language: str) -> Any:
     return dialog
 
 
-def _save_settings(dialog: Any, language: str, openai_api_key: str) -> None:
-    previous_language = get_user_settings().language
+def _save_settings(
+    dialog: Any,
+    language: str,
+    learning_stage: str,
+    theme_mode: str,
+    openai_api_key: str,
+) -> None:
     settings = get_user_settings()
+    previous_settings = settings
     save_user_settings(
         UserSettings(
             language=language,
             openai_api_key=openai_api_key,
-            learning_stage=settings.learning_stage,
+            learning_stage=LearningStage(learning_stage),
+            theme_mode=ThemeMode(theme_mode),
         ),
     )
     dialog.close()
-    if language != previous_language:
+    if (
+        language != previous_settings.language
+        or learning_stage != previous_settings.learning_stage.value
+        or theme_mode != previous_settings.theme_mode.value
+    ):
         ui.run_javascript("window.location.reload()")
 
 
@@ -180,6 +211,18 @@ def _stage_button_label(language: str, learning_stage: LearningStage) -> str:
     if learning_stage == LearningStage.SUPERVISED:
         return _translate("toolbar.supervised_learning", language)
     return _translate("toolbar.reinforcement_learning", language)
+
+
+def _learning_stage_label(learning_stage: LearningStage, language: str) -> str:
+    if learning_stage == LearningStage.SUPERVISED:
+        return _translate("settings.learning_stage.supervised_learning", language)
+    return _translate("settings.learning_stage.reinforcement_learning", language)
+
+
+def _theme_mode_label(theme_mode: ThemeMode, language: str) -> str:
+    if theme_mode == ThemeMode.DARK:
+        return _translate("settings.theme_mode.dark", language)
+    return _translate("settings.theme_mode.light", language)
 
 
 def _stage_theme_class(learning_stage: LearningStage) -> str:

@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from nicegui import ui
 
+from principia.frontend.language import ThemeMode, get_user_theme_mode
+
 _THEME_CSS = """
 :root {
   --principia-bg: #e5f5e8;
@@ -389,4 +391,9 @@ body,
 
 def apply_theme() -> None:
     """Inject Principia's shared frontend theme CSS for the current page."""
+    if get_user_theme_mode() == ThemeMode.DARK:
+        ui.dark_mode().enable()
+    else:
+        ui.dark_mode().disable()
+
     ui.add_head_html(f"<style>{_THEME_CSS}</style>")
