@@ -1,5 +1,5 @@
 Frontend
-=======
+========
 
 .. automodule:: principia.frontend
    :members:
