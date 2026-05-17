@@ -45,7 +45,7 @@ def _toolbar(language: str) -> None:
             ).props("flat")
 
             with (
-                ui.button(_translate("toolbar.language", language))
+                ui.button(_language_label(language))
                 .classes(
                     "principia-toolbar-button principia-language-button",
                 )
@@ -55,7 +55,7 @@ def _toolbar(language: str) -> None:
                     with ui.scroll_area().classes("principia-language-scroll"):
                         for language_code in translator.available_languages():
                             ui.menu_item(
-                                _translate(f"language.{language_code}", language),
+                                _language_label(language_code),
                                 on_click=_language_selector(language_code),
                             )
 
@@ -91,3 +91,7 @@ def _language_selector(language: str) -> Callable[[], None]:
 
 def _translate(element: str, language: str) -> str:
     return translator.translate(element, language)
+
+
+def _language_label(language: str) -> str:
+    return language.upper()

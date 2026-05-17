@@ -2,11 +2,8 @@
   "app.title": "Principia",
   "home.left.placeholder": "Left workspace",
   "home.right.placeholder": "Right workspace",
-  "language.en": "English",
-  "language.fr": "French",
   "navigation.language": "Language",
   "toolbar.information": "?",
-  "toolbar.language": "Language",
   "toolbar.settings": "⚙️",
   "toolbar.supervised_learning": "SL",
   "translator.english_only": "English only"

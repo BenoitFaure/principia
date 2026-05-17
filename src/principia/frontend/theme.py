@@ -72,7 +72,7 @@ body,
   overflow: hidden;
   background: var(--principia-bg);
   color: var(--principia-text);
-  padding: 22px;
+  padding: 0;
 }
 
 .principia-shell {
@@ -80,17 +80,17 @@ body,
   height: 100%;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
-  gap: 24px;
+  gap: 0;
   align-items: stretch;
 }
 
 .principia-pane {
   min-width: 0;
   min-height: 0;
-  border: 1px solid var(--principia-border);
-  border-radius: var(--principia-pane-radius);
-  background: var(--principia-pane);
-  box-shadow: var(--principia-shadow);
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
   overflow: hidden;
 }
 
@@ -141,7 +141,7 @@ body,
   height: 42px;
   border: 1px solid var(--principia-border);
   border-radius: 999px;
-  background: var(--principia-control);
+  background: transparent;
   color: var(--principia-text);
 }
 
@@ -184,7 +184,7 @@ body,
 
 @media (max-width: 760px) {
   .principia-screen {
-    padding: 12px;
+    padding: 0;
     overflow: auto;
   }
 
@@ -195,7 +195,7 @@ body,
   }
 
   .principia-vertical-separator {
-    width: calc(100vw - 56px);
+    width: calc(100vw - 12vh);
     height: 1px;
     justify-self: center;
     background: linear-gradient(
