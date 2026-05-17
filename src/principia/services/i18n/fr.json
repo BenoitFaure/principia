@@ -7,6 +7,7 @@
   "settings.openai_api_key": "Clé API OpenAI",
   "settings.save": "Enregistrer",
   "settings.title": "Paramètres",
+  "supervised_learning_main.constitution_title": "Constitution",
   "toolbar.information": "?",
   "toolbar.settings": "⚙️",
   "toolbar.supervised_learning": "SL",

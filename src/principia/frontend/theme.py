@@ -6,10 +6,10 @@ from nicegui import ui
 
 _THEME_CSS = """
 :root {
-  --principia-bg: #edf8ef;
-  --principia-pane: #f8fff7;
-  --principia-pane-muted: #e3f4e6;
-  --principia-text: #102016;
+  --principia-bg: #e5f5e8;
+  --principia-pane: #effaf1;
+  --principia-pane-muted: #d7eddb;
+  --principia-text: #123d1f;
   --principia-border: #7dbb85;
   --principia-border-strong: #3d7d49;
   --principia-control: #ffffff;
@@ -21,10 +21,10 @@ _THEME_CSS = """
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --principia-bg: #06150d;
-    --principia-pane: #0d2415;
-    --principia-pane-muted: #112d1b;
-    --principia-text: #e6f6e8;
+    --principia-bg: #06190d;
+    --principia-pane: #0b2414;
+    --principia-pane-muted: #10301b;
+    --principia-text: #d7f5dc;
     --principia-border: #346a3f;
     --principia-border-strong: #7fd28d;
     --principia-control: #13301d;
@@ -34,10 +34,10 @@ _THEME_CSS = """
 }
 
 body.body--light {
-  --principia-bg: #edf8ef;
-  --principia-pane: #f8fff7;
-  --principia-pane-muted: #e3f4e6;
-  --principia-text: #102016;
+  --principia-bg: #e5f5e8;
+  --principia-pane: #effaf1;
+  --principia-pane-muted: #d7eddb;
+  --principia-text: #123d1f;
   --principia-border: #7dbb85;
   --principia-border-strong: #3d7d49;
   --principia-control: #ffffff;
@@ -46,10 +46,10 @@ body.body--light {
 }
 
 body.body--dark {
-  --principia-bg: #06150d;
-  --principia-pane: #0d2415;
-  --principia-pane-muted: #112d1b;
-  --principia-text: #e6f6e8;
+  --principia-bg: #06190d;
+  --principia-pane: #0b2414;
+  --principia-pane-muted: #10301b;
+  --principia-text: #d7f5dc;
   --principia-border: #346a3f;
   --principia-border-strong: #7fd28d;
   --principia-control: #13301d;
@@ -233,6 +233,22 @@ body,
   min-height: 0;
   padding: 22px;
   overflow: auto;
+}
+
+.principia-window-title {
+  color: var(--principia-text);
+  width: 100%;
+  font-size: clamp(1.35rem, 2.7vw, 2.25rem);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  text-align: center;
+}
+
+.principia-constitution-list {
+  margin: 24px 0 0;
+  padding-left: 1.2rem;
+  color: var(--principia-text);
 }
 
 .principia-placeholder {

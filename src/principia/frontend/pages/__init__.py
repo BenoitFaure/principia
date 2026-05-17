@@ -1,8 +1,10 @@
 """NiceGUI page registration."""
 
-from principia.frontend.pages.home import register_home_page
+from principia.frontend.pages.supervised_learning_main import (
+    register_supervised_learning_main_page,
+)
 
 
 def register_pages() -> None:
     """Register all frontend pages."""
-    register_home_page()
+    register_supervised_learning_main_page()
