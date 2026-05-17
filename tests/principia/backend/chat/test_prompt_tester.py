@@ -1,3 +1,5 @@
+import pytest
+
 from principia.backend.chat import PromptTestChat, create_prompt_test_chat
 from principia.backend.database import ConstitutionElement, DevElement, ExampleElement
 from principia.services.openai_provider import ConversationInput, ConversationOutput
@@ -56,6 +58,7 @@ def test_generate_critique_stores_user_prompt_and_assistant_reply() -> None:
     conversation = chat.conversation()
     assert [message.role for message in conversation] == ["user", "assistant"]
     assert conversation[1].content == "Critique output."
+    assert chat.critique() == "Critique output."
 
 
 def test_generate_response_appends_response_prompt_and_assistant_reply() -> None:
@@ -81,6 +84,39 @@ def test_generate_response_appends_response_prompt_and_assistant_reply() -> None
     assert conversation[2].content == "Improve the response."
 
 
+def test_update_critique_replaces_critique_and_clears_stale_response() -> None:
+    provider = FakeConversationProvider(["Critique output.", "Response output."])
+    chat = create_prompt_test_chat(
+        dev_element=_dev_element(),
+        constitution_element=_constitution_element(),
+        examples=[],
+        provider=provider,
+    )
+    chat.generate_critique()
+    chat.generate_response()
+
+    chat.update_critique("Updated critique.")
+
+    conversation = chat.conversation()
+    assert [message.content for message in conversation] == [
+        conversation[0].content,
+        "Updated critique.",
+    ]
+    assert chat.critique() == "Updated critique."
+
+
+def test_update_critique_before_generating_critique_raises() -> None:
+    chat = create_prompt_test_chat(
+        dev_element=_dev_element(),
+        constitution_element=_constitution_element(),
+        examples=[],
+        provider=FakeConversationProvider([]),
+    )
+
+    with pytest.raises(RuntimeError, match="before generating one"):
+        chat.update_critique("Updated critique.")
+
+
 def test_step_alternates_full_critique_response_and_short_critique() -> None:
     provider = FakeConversationProvider(
         ["Critique output.", "Response output.", "Second critique output."]
@@ -102,6 +138,7 @@ def test_step_alternates_full_critique_response_and_short_critique() -> None:
     assert second_step[2].content == "Improve the response."
     assert len(third_step) == 6
     assert third_step[4].content == "Critique the assistant."
+    assert chat.critique() == "Second critique output."
 
 
 def test_step_keeps_alternating_after_third_call() -> None:
