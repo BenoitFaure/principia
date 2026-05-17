@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Callable
 from typing import Any
 
@@ -27,6 +28,7 @@ def base_two_pane_layout(
     learning_stage: LearningStage,
     left_content: PaneBuilder | None = None,
     right_content: PaneBuilder | None = None,
+    stage_button_href: str | None = None,
 ) -> None:
     """Render the shared screen-sized two-pane layout."""
     with ui.element("main").classes(
@@ -36,7 +38,7 @@ def base_two_pane_layout(
             with ui.element("section").classes(
                 "principia-pane principia-pane-left",
             ):
-                _toolbar(language, learning_stage)
+                _toolbar(language, learning_stage, stage_button_href)
                 _pane_content(language, left_content, "home.left.placeholder")
 
             ui.element("div").classes("principia-vertical-separator")
@@ -47,7 +49,11 @@ def base_two_pane_layout(
                 _pane_content(language, right_content, "home.right.placeholder")
 
 
-def _toolbar(language: str, learning_stage: LearningStage) -> None:
+def _toolbar(
+    language: str,
+    learning_stage: LearningStage,
+    stage_button_href: str | None,
+) -> None:
     settings_dialog = _settings_dialog(language)
 
     with ui.element("div").classes("principia-toolbar-shell"):
@@ -77,7 +83,7 @@ def _toolbar(language: str, learning_stage: LearningStage) -> None:
 
             ui.button(
                 _stage_button_label(language, learning_stage),
-                on_click=_learning_stage_selector(_opposite_stage(learning_stage)),
+                on_click=_stage_button_selector(learning_stage, stage_button_href),
             ).classes("principia-toolbar-button").props("flat")
 
         ui.element("div").classes("principia-toolbar-divider")
@@ -202,6 +208,19 @@ def _learning_stage_selector(learning_stage: LearningStage) -> Callable[[], None
         ui.run_javascript("window.location.reload()")
 
     return select_learning_stage
+
+
+def _stage_button_selector(
+    learning_stage: LearningStage,
+    href: str | None,
+) -> Callable[[], None]:
+    if href is None:
+        return _learning_stage_selector(_opposite_stage(learning_stage))
+
+    def navigate_to_href() -> None:
+        ui.run_javascript(f"window.location.href = {json.dumps(href)}")
+
+    return navigate_to_href
 
 
 def _opposite_stage(learning_stage: LearningStage) -> LearningStage:

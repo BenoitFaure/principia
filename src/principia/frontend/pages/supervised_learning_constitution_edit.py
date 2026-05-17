@@ -148,6 +148,7 @@ def supervised_learning_constitution_edit_page() -> None:
         LearningStage.SUPERVISED,
         left_content=constitution_workspace,
         right_content=examples_workspace,
+        stage_button_href="/",
     )
 
 

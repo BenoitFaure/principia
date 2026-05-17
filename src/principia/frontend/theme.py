@@ -262,7 +262,7 @@ body,
   background: var(--principia-pane);
   color: var(--principia-text);
   border: 1px solid var(--principia-border);
-  border-radius: 16px;
+  border-radius: 6px;
 }
 
 .principia-language-scroll {
@@ -281,7 +281,7 @@ body,
 .principia-settings-card {
   width: min(420px, calc(100vw - 48px));
   border: 1px solid var(--principia-border-strong);
-  border-radius: 22px;
+  border-radius: 8px;
   background: var(--principia-pane);
   color: var(--principia-text);
   box-shadow: var(--principia-shadow);
@@ -392,10 +392,11 @@ body,
 
 .principia-link-marker {
   width: 44px;
-  min-height: 44px;
-  align-self: start;
+  height: 100%;
+  min-height: 108px;
+  align-self: stretch;
   border: 1px solid var(--principia-border);
-  border-radius: 999px;
+  border-radius: 6px;
   color: var(--principia-text);
   background: var(--principia-control);
 }
@@ -414,7 +415,7 @@ body,
   width: 100%;
   min-height: 108px;
   border: 1px solid var(--principia-border);
-  border-radius: 18px;
+  border-radius: 6px;
   background: var(--principia-pane-muted);
   color: var(--principia-text);
   padding: 16px 18px;
@@ -453,7 +454,7 @@ body,
   width: 100%;
   min-height: 58px;
   border: 1px dashed var(--principia-border-strong);
-  border-radius: 18px;
+  border-radius: 6px;
   color: var(--principia-text);
   font-size: 1.8rem;
 }
@@ -462,7 +463,7 @@ body,
   width: 100%;
   min-height: 108px;
   border: 1px solid var(--principia-border);
-  border-radius: 18px;
+  border-radius: 6px;
   background: var(--principia-pane-muted);
   color: var(--principia-text);
   padding: 16px 18px;
@@ -512,7 +513,7 @@ body,
   width: 100%;
   min-height: 58px;
   border: 1px dashed var(--principia-border-strong);
-  border-radius: 18px;
+  border-radius: 6px;
   color: var(--principia-text);
   font-size: 1.8rem;
 }
@@ -536,7 +537,7 @@ body,
 .principia-constitution-edit-card {
   width: min(760px, calc(100vw - 48px));
   border: 1px solid var(--principia-border-strong);
-  border-radius: 22px;
+  border-radius: 8px;
   background: var(--principia-pane);
   color: var(--principia-text);
   box-shadow: var(--principia-shadow);
@@ -547,7 +548,7 @@ body,
 .principia-example-edit-card {
   width: min(760px, calc(100vw - 48px));
   border: 1px solid var(--principia-border-strong);
-  border-radius: 22px;
+  border-radius: 8px;
   background: var(--principia-pane);
   color: var(--principia-text);
   box-shadow: var(--principia-shadow);
@@ -615,12 +616,12 @@ body,
 }
 
 .principia-constitution-edit-button {
-  border-radius: 12px;
+  border-radius: 6px;
   min-width: 96px;
 }
 
 .principia-example-edit-button {
-  border-radius: 12px;
+  border-radius: 6px;
   min-width: 96px;
 }
 
@@ -649,7 +650,7 @@ body,
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 18px;
+  border-radius: 6px;
   background: var(--principia-pane-muted);
   color: var(--principia-text);
   letter-spacing: 0.02em;
