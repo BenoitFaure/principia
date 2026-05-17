@@ -32,15 +32,41 @@ class PromptTestChat:
         self._model = model
         self._conversation: list[ConversationMessage] = []
         self._step_count = 0
+        self._critique_message_index: int | None = None
+        self._response_prompt_index: int | None = None
+        self._response_message_index: int | None = None
 
     def conversation(self) -> list[ConversationMessage]:
         return list(self._conversation)
 
+    def critique(self) -> str | None:
+        if self._critique_message_index is None:
+            return None
+        return self._conversation[self._critique_message_index].content
+
+    def update_critique(self, critique: str) -> None:
+        if self._critique_message_index is None:
+            msg = "Cannot update critique before generating one."
+            raise RuntimeError(msg)
+
+        self._conversation[self._critique_message_index] = ConversationMessage(
+            role="assistant",
+            content=critique,
+        )
+        self._clear_response_after_updated_critique()
+
     def generate_critique(self) -> str:
-        return self._send_user_message(self._initial_critique_prompt())
+        critique = self._send_user_message(self._initial_critique_prompt())
+        self._critique_message_index = len(self._conversation) - 1
+        self._response_prompt_index = None
+        self._response_message_index = None
+        return critique
 
     def generate_response(self) -> str:
-        return self._send_user_message(self._constitution_element.response_prompt)
+        self._response_prompt_index = len(self._conversation)
+        response = self._send_user_message(self._constitution_element.response_prompt)
+        self._response_message_index = len(self._conversation) - 1
+        return response
 
     def step(self) -> list[ConversationMessage]:
         if self._step_count == 0:
@@ -49,9 +75,26 @@ class PromptTestChat:
             self.generate_response()
         else:
             self._send_user_message(self._constitution_element.critique_prompt)
+            self._critique_message_index = len(self._conversation) - 1
+            self._response_prompt_index = None
+            self._response_message_index = None
 
         self._step_count += 1
         return self.conversation()
+
+    def _clear_response_after_updated_critique(self) -> None:
+        if (
+            self._critique_message_index is None
+            or self._response_prompt_index is None
+            or self._response_message_index is None
+            or self._response_prompt_index < self._critique_message_index
+        ):
+            return
+
+        del self._conversation[self._response_prompt_index :]
+        self._response_prompt_index = None
+        self._response_message_index = None
+        self._step_count = len(self._conversation) // 2
 
     def _send_user_message(self, prompt: str) -> str:
         self._conversation.append(ConversationMessage(role="user", content=prompt))
