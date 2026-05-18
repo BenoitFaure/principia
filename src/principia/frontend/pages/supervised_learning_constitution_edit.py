@@ -48,6 +48,22 @@ def supervised_learning_constitution_edit_page() -> None:
             None,
         )
 
+    def selected_context_examples(
+        current_example: ExampleElement | None,
+    ) -> list[ExampleElement]:
+        constitution = selected_constitution()
+        if constitution is None:
+            return []
+
+        current_hash = current_example.example_hash if current_example else None
+        linked_hashes = set(constitution.example_hashes)
+        return [
+            example
+            for example in examples
+            if example.example_hash in linked_hashes
+            and example.example_hash != current_hash
+        ]
+
     def selected_hashes_in_example_order() -> list[str]:
         ordered_hashes = [
             example.example_hash
@@ -128,7 +144,8 @@ def supervised_learning_constitution_edit_page() -> None:
 
     @ui.refreshable
     def examples_workspace(language: str) -> None:
-        _test_navigation(language, selected_constitution_hash is not None)
+        selected = selected_constitution()
+        _test_navigation(language, selected is not None)
         ui.label(
             translator.translate("constitution_link.examples_title", language),
         ).classes("principia-window-title")
@@ -138,12 +155,19 @@ def supervised_learning_constitution_edit_page() -> None:
                 _example_link_widget(
                     language,
                     example,
-                    selected_constitution_hash is not None,
+                    selected,
+                    selected_context_examples(example),
+                    selected is not None,
                     example.example_hash in selected_example_hashes,
                     toggle_example,
                 )
 
-            create_dialog = supervised_learning_example_edit(language, None)
+            create_dialog = supervised_learning_example_edit(
+                language,
+                None,
+                selected,
+                selected_context_examples(None),
+            )
             ui.button("+", on_click=create_dialog.open).classes(
                 "principia-example-add",
             ).props("flat")
@@ -201,11 +225,18 @@ def _constitution_link_widget(
 def _example_link_widget(
     language: str,
     example: ExampleElement,
+    constitution: ConstitutionElement | None,
+    examples: list[ExampleElement],
     critique_selected: bool,
     selected: bool,
     on_marker_click,
 ) -> None:
-    edit_dialog = supervised_learning_example_edit(language, example)
+    edit_dialog = supervised_learning_example_edit(
+        language,
+        example,
+        constitution,
+        examples,
+    )
     preview = example.user or translator.translate(
         "constitution_link.empty_user_prompt",
         language,

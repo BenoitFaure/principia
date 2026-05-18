@@ -540,7 +540,7 @@ body,
 }
 
 .principia-example-edit-dialog .q-dialog__inner {
-  padding: 24px;
+  padding: 18px;
 }
 
 .principia-constitution-edit-card {
@@ -555,14 +555,18 @@ body,
 }
 
 .principia-example-edit-card {
-  width: min(760px, calc(100vw - 48px));
+  width: min(1240px, calc(100vw - 36px));
+  height: min(840px, calc(100vh - 36px));
+  max-width: none;
   border: 1px solid var(--principia-border-strong);
   border-radius: 8px;
   background: var(--principia-pane);
   color: var(--principia-text);
   box-shadow: var(--principia-shadow);
-  padding: 24px;
-  gap: 18px;
+  padding: 18px;
+  gap: 14px;
+  display: flex;
+  flex-direction: column;
 }
 
 .principia-constitution-edit-title {
@@ -575,6 +579,140 @@ body,
   color: var(--principia-text);
   font-size: 1.25rem;
   font-weight: 650;
+}
+
+.principia-example-edit-header {
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.principia-example-edit-close {
+  min-width: 42px;
+  min-height: 42px;
+  border: 1px solid var(--principia-border);
+  border-radius: 6px;
+  color: var(--principia-text);
+  background: var(--principia-control);
+}
+
+.principia-example-edit-close:hover {
+  background: var(--principia-control-hover);
+}
+
+.principia-example-edit-body {
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(360px, 0.92fr) minmax(0, 1.08fr);
+  gap: 18px;
+}
+
+.principia-example-editor-pane,
+.principia-example-chat-pane {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid var(--principia-border);
+  border-radius: 6px;
+  background: var(--principia-pane-muted);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.principia-example-editor-pane {
+  overflow-y: auto;
+}
+
+.principia-example-chat-title {
+  color: var(--principia-text);
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+.principia-example-chat-hint {
+  color: var(--principia-text);
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+.principia-example-chat-history {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid var(--principia-border);
+  border-radius: 6px;
+  background: var(--principia-pane);
+  padding: 14px;
+  gap: 10px;
+}
+
+.principia-example-chat-bubble {
+  max-width: 88%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  border: 1px solid var(--principia-border);
+}
+
+.principia-example-chat-bubble-user {
+  align-self: flex-end;
+  background: var(--principia-control-hover);
+}
+
+.principia-example-chat-bubble-assistant {
+  align-self: flex-start;
+  background: var(--principia-control);
+}
+
+.principia-example-chat-send-row {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 48px;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.principia-example-chat-input {
+  width: 100%;
+  min-width: 0;
+}
+
+.principia-example-chat-input .q-field__inner {
+  width: 100%;
+}
+
+.principia-example-chat-send,
+.principia-example-chat-action {
+  border: 1px solid var(--principia-border);
+  border-radius: 6px;
+  color: var(--principia-text);
+  background: var(--principia-control);
+}
+
+.principia-example-chat-send:hover,
+.principia-example-chat-action:hover {
+  background: var(--principia-control-hover);
+}
+
+.principia-example-chat-actions {
+  width: 100%;
+  min-width: 0;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.principia-example-chat-action {
+  min-width: 150px;
 }
 
 .principia-constitution-edit-field {
@@ -687,6 +825,21 @@ body,
       var(--principia-border-strong),
       transparent
     );
+  }
+}
+
+@media (max-width: 900px) {
+  .principia-example-edit-card {
+    height: calc(100vh - 24px);
+    width: calc(100vw - 24px);
+  }
+
+  .principia-example-edit-body {
+    grid-template-columns: 1fr;
+  }
+
+  .principia-example-chat-pane {
+    min-height: 480px;
   }
 }
 """
