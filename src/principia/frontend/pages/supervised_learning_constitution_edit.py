@@ -128,7 +128,7 @@ def supervised_learning_constitution_edit_page() -> None:
 
     @ui.refreshable
     def examples_workspace(language: str) -> None:
-        _test_navigation(language, selected_constitution_hash is not None)
+        _test_navigation(language, selected_constitution_hash)
         ui.label(
             translator.translate("constitution_link.examples_title", language),
         ).classes("principia-window-title")
@@ -157,15 +157,26 @@ def supervised_learning_constitution_edit_page() -> None:
     )
 
 
-def _test_navigation(language: str, enabled: bool) -> None:
+def _test_navigation(language: str, constitution_hash: str | None) -> None:
+    def navigate_to_test() -> None:
+        if constitution_hash is None:
+            return
+
+        target_href = f"/supervised/constitution/test/{constitution_hash}"
+        ui.run_javascript(
+            f"window.location.href = {json.dumps(target_href)}",
+        )
+
+    button_classes = "principia-edit-navigation-title"
+    if constitution_hash is not None:
+        button_classes += " principia-edit-navigation-title-enabled"
+
     button = ui.button(
         translator.translate("constitution_link.test_navigation", language),
-    ).classes(
-        "principia-edit-navigation-title"
-        f" {'principia-edit-navigation-title-enabled' if enabled else ''}",
-    )
+        on_click=navigate_to_test if constitution_hash is not None else None,
+    ).classes(button_classes)
     button.props("flat no-caps")
-    if not enabled:
+    if constitution_hash is None:
         button.props("disable")
 
 

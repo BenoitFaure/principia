@@ -9,6 +9,9 @@ from principia.frontend.pages.reinforcement_learning_main import (
 from principia.frontend.pages.supervised_learning_constitution_edit import (
     supervised_learning_constitution_edit_page,
 )
+from principia.frontend.pages.supervised_learning_constitution_test import (
+    supervised_learning_constitution_test_page,
+)
 from principia.frontend.pages.supervised_learning_main import supervised_learning_main
 
 
@@ -26,3 +29,7 @@ def register_pages() -> None:
     @ui.page("/supervised/constitution/edit")
     def supervised_constitution_edit_page() -> None:
         supervised_learning_constitution_edit_page()
+
+    @ui.page("/supervised/constitution/test/{constitution_hash}")
+    def supervised_constitution_test_page(constitution_hash: str) -> None:
+        supervised_learning_constitution_test_page(constitution_hash)
