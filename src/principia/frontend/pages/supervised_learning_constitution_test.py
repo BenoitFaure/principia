@@ -94,6 +94,14 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
         dialog.close()
         red_team_workspace.refresh(language)
 
+    def _scroll_chat_to_bottom() -> None:
+        ui.run_javascript("""
+          setTimeout(() => {
+            const el = document.querySelector('.principia-prompt-test-chat');
+            if (el) el.scrollTop = el.scrollHeight;
+          }, 50);
+        """)
+
     def do_reset() -> None:
         nonlocal conversation_messages, loading
         conversation_messages = []
@@ -158,6 +166,7 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
         finally:
             loading = False
         red_team_workspace.refresh(language)
+        _scroll_chat_to_bottom()
 
     async def do_response() -> None:
         nonlocal conversation_messages, loading
@@ -190,6 +199,7 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
         finally:
             loading = False
         red_team_workspace.refresh(language)
+        _scroll_chat_to_bottom()
 
     @ui.refreshable
     def critique_workspace(language: str) -> None:
@@ -253,7 +263,22 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
                 ui.label(red_team_element.bot).classes(
                     "principia-chat-bubble principia-chat-bubble-bot"
                 )
-                for msg in conversation_messages:
+                for i, msg in enumerate(conversation_messages):
+                    if i == 1:
+                        ui.label(
+                            translator.translate(
+                                "constitution_test.critique_button", language
+                            )
+                        ).classes(
+                            "principia-chat-section-label"
+                            " principia-chat-section-label-critique"
+                        )
+                    elif i == 3:
+                        ui.label(
+                            translator.translate(
+                                "constitution_test.response_button", language
+                            )
+                        ).classes("principia-chat-section-label")
                     bubble_class = (
                         "principia-chat-bubble-user"
                         if msg["role"] == "user"

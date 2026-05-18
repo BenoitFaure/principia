@@ -767,6 +767,19 @@ body,
   background: var(--principia-control-hover);
 }
 
+.principia-chat-section-label {
+  font-size: 0.8rem;
+  font-weight: 650;
+  color: var(--principia-text);
+  opacity: 0.8;
+  margin-top: 6px;
+}
+
+.principia-chat-section-label-critique {
+  color: #c92a2a;
+  opacity: 1;
+}
+
 .principia-prompt-test-loading {
   align-self: center;
   color: var(--principia-text);
