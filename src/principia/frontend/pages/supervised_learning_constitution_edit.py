@@ -193,7 +193,13 @@ def _constitution_link_widget(
         language,
     )
     marker = "💾" if selected and dirty else "●" if selected else "○"
-    marker_class = " principia-link-marker-dirty" if selected and dirty else ""
+    marker_class = (
+        " principia-link-marker-dirty"
+        if selected and dirty
+        else " principia-link-marker-selected"
+        if selected
+        else ""
+    )
     widget_class = " principia-link-widget-selected" if selected else ""
 
     with ui.row().classes("principia-link-row"):
@@ -222,7 +228,9 @@ def _example_link_widget(
         language,
     )
     marker = "●" if selected else "○"
-    marker_class = "" if critique_selected else " principia-link-marker-muted"
+    marker_class = " principia-link-marker-selected" if selected else ""
+    if not critique_selected:
+        marker_class += " principia-link-marker-muted"
     widget_class = " principia-link-widget-selected" if selected else ""
 
     with ui.row().classes("principia-link-row"):

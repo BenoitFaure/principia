@@ -96,6 +96,16 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
 
     @ui.refreshable
     def red_team_workspace(language: str) -> None:
+        ui.button(
+            translator.translate("constitution_test.constitution_navigation", language),
+            on_click=lambda: ui.run_javascript(
+                "window.location.href = '/supervised/constitution/edit'",
+            ),
+        ).classes(
+            "principia-edit-navigation-title principia-edit-navigation-title-enabled"
+        ).props(
+            "flat no-caps",
+        )
         _red_team_prompt_widget(
             language,
             red_team_prompt,
@@ -108,7 +118,7 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
         LearningStage.SUPERVISED,
         left_content=critique_workspace,
         right_content=red_team_workspace,
-        stage_button_href="/supervised/constitution/edit",
+        stage_button_href="/",
     )
 
 
@@ -124,7 +134,7 @@ def _constitution_test_widget(
 
     with ui.row().classes("principia-link-row"):
         ui.button(
-            translator.translate("constitution_test.save", language),
+            "💾",
             on_click=lambda: _save_constitution(constitution, selected_hashes()),
         ).classes("principia-link-marker principia-test-save-marker").props(
             "flat no-caps",
@@ -144,13 +154,14 @@ def _example_test_widget(
         language,
     )
     marker = "●" if selected else "○"
+    marker_class = " principia-link-marker-selected" if selected else ""
     widget_class = " principia-link-widget-selected" if selected else ""
 
     with ui.row().classes("principia-link-row"):
         ui.button(
             marker,
             on_click=lambda: on_marker_click(example),
-        ).classes("principia-link-marker").props("flat")
+        ).classes(f"principia-link-marker{marker_class}").props("flat")
         with ui.element("div").classes(f"principia-example-widget{widget_class}"):
             with ui.element("div").classes("principia-example-content"):
                 ui.label(preview).classes("principia-example-user")
@@ -182,14 +193,48 @@ def _red_team_prompt_dialog(
     dev_prompts: list[DevElement],
     on_prompt_click,
 ):
-    with ui.dialog().classes("principia-red-team-dialog") as dialog:
-        with ui.card().classes("principia-red-team-card"):
-            ui.label(
-                translator.translate("constitution_test.red_team_prompt", language),
-            ).classes("principia-red-team-title")
+    previewed_prompt = dev_prompts[0] if dev_prompts else None
+
+    def preview_or_select_prompt(prompt: DevElement, dialog) -> None:
+        nonlocal previewed_prompt
+        if prompt == previewed_prompt:
+            on_prompt_click(prompt, dialog)
+            return
+
+        previewed_prompt = prompt
+        red_team_dialog_content.refresh(language, dialog)
+
+    def select_previewed_prompt(dialog) -> None:
+        if previewed_prompt is None:
+            return
+
+        on_prompt_click(previewed_prompt, dialog)
+
+    @ui.refreshable
+    def red_team_dialog_content(language: str, dialog) -> None:
+        ui.label(
+            translator.translate("constitution_test.red_team_prompt", language),
+        ).classes("principia-red-team-title")
+        with ui.element("div").classes("principia-red-team-selector"):
             with ui.element("div").classes("principia-red-team-list"):
                 for prompt in dev_prompts:
-                    _dev_prompt_widget(language, prompt, dialog, on_prompt_click)
+                    _dev_prompt_widget(
+                        language,
+                        prompt,
+                        prompt == previewed_prompt,
+                        dialog,
+                        preview_or_select_prompt,
+                    )
+            _dev_prompt_chat(
+                language,
+                previewed_prompt,
+                dialog,
+                select_previewed_prompt,
+            )
+
+    with ui.dialog().classes("principia-red-team-dialog") as dialog:
+        with ui.card().classes("principia-red-team-card"):
+            red_team_dialog_content(language, dialog)
 
     return dialog
 
@@ -197,6 +242,7 @@ def _red_team_prompt_dialog(
 def _dev_prompt_widget(
     language: str,
     prompt: DevElement,
+    previewed: bool,
     dialog,
     on_prompt_click,
 ) -> None:
@@ -207,10 +253,43 @@ def _dev_prompt_widget(
 
     with (
         ui.button(on_click=lambda: on_prompt_click(prompt, dialog))
-        .classes("principia-dev-prompt-widget")
+        .classes(
+            "principia-dev-prompt-widget"
+            f" {'principia-dev-prompt-widget-selected' if previewed else ''}",
+        )
         .props("flat no-caps")
     ):
         ui.label(preview).classes("principia-dev-prompt-user")
+
+
+def _dev_prompt_chat(
+    language: str,
+    prompt: DevElement | None,
+    dialog,
+    on_select_click,
+) -> None:
+    with ui.element("div").classes("principia-red-team-chat"):
+        with ui.element("div").classes("principia-red-team-chat-messages"):
+            if prompt is None:
+                ui.label(
+                    translator.translate(
+                        "constitution_test.no_red_team_prompts", language
+                    ),
+                ).classes("principia-red-team-empty")
+            else:
+                ui.label(prompt.user).classes(
+                    "principia-chat-bubble principia-chat-bubble-user",
+                )
+                ui.label(prompt.bot).classes(
+                    "principia-chat-bubble principia-chat-bubble-bot",
+                )
+
+        ui.button(
+            translator.translate("constitution_test.select_red_team_prompt", language),
+            on_click=lambda: on_select_click(dialog),
+        ).classes("principia-red-team-select").props(
+            "flat no-caps" + (" disable" if prompt is None else ""),
+        )
 
 
 def _save_constitution(

@@ -423,12 +423,18 @@ body,
   background: var(--principia-control-hover);
 }
 
+.principia-link-marker-selected {
+  border-color: var(--principia-border-strong);
+  background: var(--principia-control-hover);
+  box-shadow: inset 0 0 0 1px var(--principia-border-strong);
+}
+
 .principia-link-marker-muted {
   opacity: 0.52;
 }
 
 .principia-test-save-marker {
-  font-size: 0.75rem;
+  font-size: 1.15rem;
   font-weight: 650;
 }
 
@@ -585,7 +591,7 @@ body,
 }
 
 .principia-red-team-card {
-  width: min(760px, calc(100vw - 48px));
+  width: min(1080px, calc(100vw - 48px));
   border: 1px solid var(--principia-border-strong);
   border-radius: 8px;
   background: var(--principia-pane);
@@ -603,11 +609,20 @@ body,
 
 .principia-red-team-list {
   width: 100%;
-  max-height: min(62vh, 620px);
+  min-height: 0;
+  max-height: min(66vh, 620px);
   display: flex;
   flex-direction: column;
   gap: 14px;
   overflow: auto;
+}
+
+.principia-red-team-selector {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.42fr) minmax(280px, 0.58fr);
+  gap: 18px;
+  align-items: stretch;
 }
 
 .principia-dev-prompt-widget {
@@ -626,6 +641,12 @@ body,
   background: var(--principia-control-hover);
 }
 
+.principia-dev-prompt-widget-selected {
+  border-color: var(--principia-border-strong);
+  background: var(--principia-control-hover);
+  box-shadow: inset 0 0 0 1px var(--principia-border-strong);
+}
+
 .principia-dev-prompt-widget .q-btn__content {
   width: 100%;
   justify-content: flex-start;
@@ -641,6 +662,65 @@ body,
   overflow: hidden;
   white-space: normal;
   line-height: 1.45;
+}
+
+.principia-red-team-chat {
+  min-height: min(66vh, 620px);
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 14px;
+  border: 1px solid var(--principia-border);
+  border-radius: 6px;
+  background: var(--principia-control);
+  padding: 16px;
+}
+
+.principia-red-team-chat-messages {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow: auto;
+}
+
+.principia-chat-bubble {
+  max-width: 82%;
+  border: 1px solid var(--principia-border);
+  border-radius: 14px;
+  color: var(--principia-text);
+  padding: 12px 14px;
+  white-space: pre-wrap;
+  line-height: 1.45;
+}
+
+.principia-chat-bubble-user {
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+  background: var(--principia-control-hover);
+}
+
+.principia-chat-bubble-bot {
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+  background: var(--principia-pane-muted);
+}
+
+.principia-red-team-empty {
+  color: var(--principia-text);
+  opacity: 0.68;
+}
+
+.principia-red-team-select {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--principia-border-strong);
+  border-radius: 6px;
+  color: var(--principia-text);
+  background: var(--principia-pane-muted);
+}
+
+.principia-red-team-select:hover {
+  background: var(--principia-control-hover);
 }
 
 .principia-constitution-edit-dialog .q-dialog__inner {
@@ -795,6 +875,10 @@ body,
       var(--principia-border-strong),
       transparent
     );
+  }
+
+  .principia-red-team-selector {
+    grid-template-columns: 1fr;
   }
 }
 """
