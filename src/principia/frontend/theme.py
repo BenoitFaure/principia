@@ -601,6 +601,18 @@ body,
   gap: 18px;
 }
 
+.principia-example-select-card {
+  width: min(1480px, calc(100vw - 24px));
+  max-width: none;
+  border: 1px solid var(--principia-border-strong);
+  border-radius: 8px;
+  background: var(--principia-pane);
+  color: var(--principia-text);
+  box-shadow: var(--principia-shadow);
+  padding: 24px;
+  gap: 18px;
+}
+
 .principia-red-team-title {
   color: var(--principia-text);
   font-size: 1.25rem;
@@ -705,6 +717,35 @@ body,
   background: var(--principia-pane-muted);
 }
 
+.principia-chat-bubble-collapsed {
+  max-height: calc(10 * 1.45rem + 24px);
+  overflow: hidden;
+}
+
+.principia-chat-bubble-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.principia-chat-bubble-wrapper-user {
+  align-items: flex-end;
+}
+.principia-chat-bubble-wrapper-bot {
+  align-items: flex-start;
+}
+
+.principia-chat-bubble-toggle {
+  min-height: 20px;
+  height: 20px;
+  font-size: 0.7rem;
+  opacity: 0.45;
+  margin-top: 2px;
+  padding: 0 8px;
+}
+.principia-chat-bubble-toggle:hover {
+  opacity: 0.9;
+}
+
 .principia-red-team-empty {
   color: var(--principia-text);
   opacity: 0.68;
@@ -721,6 +762,108 @@ body,
 
 .principia-red-team-select:hover {
   background: var(--principia-control-hover);
+}
+
+.principia-red-team-selector-button {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 18px;
+  border: 1px solid var(--principia-border);
+  border-radius: 6px;
+  color: var(--principia-text);
+  background: var(--principia-pane-muted);
+}
+
+.principia-red-team-selector-button:hover {
+  border-color: var(--principia-border-strong);
+  background: var(--principia-control-hover);
+}
+
+.principia-prompt-test-chat {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 14px;
+  max-height: min(60vh, 520px);
+  overflow-y: auto;
+  border: 1px solid var(--principia-border);
+  border-radius: 6px;
+  background: var(--principia-control);
+}
+
+.principia-prompt-test-action {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 14px;
+  border: 1px solid var(--principia-border-strong);
+  border-radius: 6px;
+  color: var(--principia-text);
+  background: var(--principia-pane-muted);
+}
+
+.principia-prompt-test-action:hover {
+  border-color: var(--principia-border-strong);
+  background: var(--principia-control-hover);
+}
+
+.principia-chat-section-label {
+  font-size: 0.8rem;
+  font-weight: 650;
+  color: var(--principia-text);
+  opacity: 0.8;
+  margin-top: 6px;
+}
+
+.principia-chat-section-label-critique {
+  color: #c92a2a;
+  opacity: 1;
+}
+
+.principia-prompt-test-loading {
+  align-self: center;
+  color: var(--principia-text);
+  opacity: 0.68;
+  font-style: italic;
+  padding: 8px 0;
+}
+
+.principia-prompt-test-reset {
+  width: 100%;
+  min-height: 38px;
+  margin-top: 10px;
+  border: 1px solid var(--principia-border);
+  border-radius: 6px;
+  color: var(--principia-text);
+  opacity: 0.72;
+}
+
+.principia-prompt-test-reset:hover {
+  background: var(--principia-control-hover);
+  opacity: 1;
+}
+
+.principia-example-detail-label {
+  color: var(--principia-text);
+  font-size: 0.8rem;
+  font-weight: 650;
+  opacity: 0.68;
+  margin-top: 8px;
+}
+
+.principia-example-detail-value {
+  color: var(--principia-text);
+  white-space: pre-wrap;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  padding: 6px 0;
+}
+
+.principia-model-selector {
+  width: 100%;
+  margin-top: 8px;
+  color: var(--principia-text);
 }
 
 .principia-constitution-edit-dialog .q-dialog__inner {

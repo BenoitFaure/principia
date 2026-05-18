@@ -1,3 +1,5 @@
+"""Generic JSON-file persistence layer for workspace data models."""
+
 import json
 from pathlib import Path
 
@@ -5,6 +7,23 @@ from pydantic import BaseModel
 
 
 class WorkspaceJsonFile[ModelT: BaseModel]:
+    """JSON-backed list store for a single Pydantic model type.
+
+    Parameters
+    ----------
+    subfolder : str
+        Directory inside the workspace root (e.g. ``"supervised"``).
+    filename : str
+        JSON file name (e.g. ``"constitution.json"``).
+    model_type : type[ModelT]
+        Pydantic model class used for validation.
+    hash_field : str or None
+        Field name used as the unique key for upsert/delete. Required for
+        ``_update`` and ``_delete``.
+    workspace_root : Path or None
+        Override the default workspace root (project root ``/workspace``).
+    """
+
     def __init__(
         self,
         *,
@@ -22,6 +41,7 @@ class WorkspaceJsonFile[ModelT: BaseModel]:
 
     @property
     def path(self) -> Path:
+        """Absolute path to the backing JSON file."""
         return self._path
 
     def _read(self) -> list[ModelT]:

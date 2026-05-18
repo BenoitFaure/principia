@@ -1,4 +1,4 @@
-Backend API
+Backend
 ===========
 
 The backend exports a single FastAPI router from
@@ -188,25 +188,71 @@ cannot update a critique, for example before one has been generated.
 API Modules
 -----------
 
-The API package currently contains these modules:
+.. automodule:: principia.backend.api.router
+   :members:
+   :undoc-members:
 
-``principia.backend.api.router``
-   Creates the shared ``APIRouter`` and includes every subrouter.
+.. automodule:: principia.backend.api.constitution
+   :members:
+   :undoc-members:
 
-``principia.backend.api.constitution``
-   Defines the supervised constitution routes.
+.. automodule:: principia.backend.api.examples
+   :members:
+   :undoc-members:
 
-``principia.backend.api.examples``
-   Defines the supervised example routes.
+.. automodule:: principia.backend.api.dev
+   :members:
+   :undoc-members:
 
-``principia.backend.api.dev``
-   Defines the supervised development example routes.
+.. automodule:: principia.backend.api.prompt_test_chat
+   :members:
+   :undoc-members:
 
-``principia.backend.api.prompt_test_chat``
-   Defines lifecycle and action routes for the active prompt test chat.
+.. automodule:: principia.backend.api.example_refinement_chat
+   :members:
+   :undoc-members:
 
-``principia.backend.api.example_refinement_chat``
-   Defines lifecycle and action routes for the active example refinement chat.
+.. automodule:: principia.backend.api.chat_state
+   :members:
+   :undoc-members:
 
-``principia.backend.api.chat_state``
-   Contains the small in-memory active-chat state helper used by the chat APIs.
+Database Models
+---------------
+
+.. automodule:: principia.backend.database
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: principia.backend.database.constitution
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: principia.backend.database.examples
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: principia.backend.database.dev
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: principia.backend.database.workspace_json_file
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Chat Classes
+------------
+
+.. automodule:: principia.backend.chat.prompt_tester
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: principia.backend.chat.example_refiner
+   :members:
+   :undoc-members:
+   :show-inheritance:

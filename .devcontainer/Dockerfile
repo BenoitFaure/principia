@@ -1,7 +1,12 @@
 # .devcontainer/Dockerfile
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 
-RUN apt-get update && apt-get install -y git curl && rm -rf /var/lib/apt/lists/*
+# Added libatomic1 to the system utilities setup
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libatomic1 \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /workspaces/principia
 
