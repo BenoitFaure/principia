@@ -19,6 +19,9 @@ the datasets needed for both training phases. The approach is based on Anthropic
 
    guides/goal
    guides/main_page
+   guides/constitution_page
+   guides/test_page
+   guides/reinforcement_learning
 
 .. toctree::
    :maxdepth: 2
