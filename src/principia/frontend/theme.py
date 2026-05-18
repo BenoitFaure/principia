@@ -767,6 +767,45 @@ body,
   background: var(--principia-control-hover);
 }
 
+.principia-prompt-test-loading {
+  align-self: center;
+  color: var(--principia-text);
+  opacity: 0.68;
+  font-style: italic;
+  padding: 8px 0;
+}
+
+.principia-prompt-test-reset {
+  width: 100%;
+  min-height: 38px;
+  margin-top: 10px;
+  border: 1px solid var(--principia-border);
+  border-radius: 6px;
+  color: var(--principia-text);
+  opacity: 0.72;
+}
+
+.principia-prompt-test-reset:hover {
+  background: var(--principia-control-hover);
+  opacity: 1;
+}
+
+.principia-example-detail-label {
+  color: var(--principia-text);
+  font-size: 0.8rem;
+  font-weight: 650;
+  opacity: 0.68;
+  margin-top: 8px;
+}
+
+.principia-example-detail-value {
+  color: var(--principia-text);
+  white-space: pre-wrap;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  padding: 6px 0;
+}
+
 .principia-constitution-edit-dialog .q-dialog__inner {
   padding: 24px;
 }
