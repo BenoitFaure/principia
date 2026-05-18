@@ -2,9 +2,9 @@ name: Docs
 
 on:
   push:
-    branches: [main]
+    branches: [docs]
   pull_request:
-    branches: [main]
+    branches: [docs]
 
 jobs:
   build:
@@ -35,7 +35,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/docs'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
