@@ -41,7 +41,9 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
     selected_example_hashes = (
         set(constitution.example_hashes) if constitution is not None else set()
     )
-    red_team_prompt: str | None = None
+    red_team_element: DevElement | None = None
+    critique_text: str | None = None
+    response_text: str | None = None
 
     def selected_hashes_in_example_order() -> list[str]:
         ordered_hashes = [
@@ -69,9 +71,71 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
         critique_workspace.refresh(language)
 
     def select_red_team_prompt(prompt: DevElement, dialog) -> None:
-        nonlocal red_team_prompt
-        red_team_prompt = prompt.user
+        nonlocal red_team_element, critique_text, response_text
+        red_team_element = prompt
+        critique_text = None
+        response_text = None
         dialog.close()
+        red_team_workspace.refresh(language)
+
+    async def do_critique() -> None:
+        nonlocal critique_text
+        if constitution is None or red_team_element is None:
+            return
+        examples_for_init = [
+            e for e in examples if e.example_hash in selected_example_hashes
+        ]
+        init_payload = {
+            "dev_element": red_team_element.model_dump(),
+            "constitution_element": constitution.model_dump(),
+            "examples": [e.model_dump() for e in examples_for_init],
+        }
+        try:
+            await ui.run_javascript(
+                f"""
+                return await (async () => {{
+                  const r = await fetch('/api/chat/prompt-test/init', {{
+                    method: 'POST',
+                    headers: {{'Content-Type': 'application/json'}},
+                    body: JSON.stringify({json.dumps(init_payload)}),
+                  }});
+                  if (!r.ok) throw new Error(await r.text());
+                  return await r.json();
+                }})();
+                """,
+                timeout=30,
+            )
+            result = await ui.run_javascript(
+                """
+                return await (async () => {
+                  const r = await fetch('/api/chat/prompt-test/critique', {method: 'POST'});
+                  if (!r.ok) throw new Error(await r.text());
+                  return await r.json();
+                })();
+                """,
+                timeout=60,
+            )
+            critique_text = result["content"]
+        except Exception as e:
+            ui.notify(str(e))
+        red_team_workspace.refresh(language)
+
+    async def do_response() -> None:
+        nonlocal response_text
+        try:
+            result = await ui.run_javascript(
+                """
+                return await (async () => {
+                  const r = await fetch('/api/chat/prompt-test/response', {method: 'POST'});
+                  if (!r.ok) throw new Error(await r.text());
+                  return await r.json();
+                })();
+                """,
+                timeout=60,
+            )
+            response_text = result["content"]
+        except Exception as e:
+            ui.notify(str(e))
         red_team_workspace.refresh(language)
 
     @ui.refreshable
@@ -106,12 +170,36 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
         ).props(
             "flat no-caps",
         )
-        _red_team_prompt_widget(
-            language,
-            red_team_prompt,
-            dev_prompts,
-            select_red_team_prompt,
-        )
+
+        _red_team_selector_widget(language, dev_prompts, select_red_team_prompt)
+
+        if red_team_element is not None:
+            with ui.element("div").classes("principia-prompt-test-chat"):
+                ui.label(red_team_element.user).classes(
+                    "principia-chat-bubble principia-chat-bubble-user"
+                )
+                ui.label(red_team_element.bot).classes(
+                    "principia-chat-bubble principia-chat-bubble-bot"
+                )
+                if critique_text is not None:
+                    ui.label(critique_text).classes(
+                        "principia-chat-bubble principia-chat-bubble-bot"
+                    )
+                if response_text is not None:
+                    ui.label(response_text).classes(
+                        "principia-chat-bubble principia-chat-bubble-bot"
+                    )
+
+            if critique_text is None:
+                ui.button(
+                    translator.translate("constitution_test.critique_button", language),
+                    on_click=do_critique,
+                ).classes("principia-prompt-test-action").props("flat no-caps")
+            elif response_text is None:
+                ui.button(
+                    translator.translate("constitution_test.response_button", language),
+                    on_click=do_response,
+                ).classes("principia-prompt-test-action").props("flat no-caps")
 
     base_two_pane_layout(
         language,
@@ -120,6 +208,18 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
         right_content=red_team_workspace,
         stage_button_href="/",
     )
+
+
+def _red_team_selector_widget(
+    language: str,
+    dev_prompts: list[DevElement],
+    on_prompt_click,
+) -> None:
+    dialog = _red_team_prompt_dialog(language, dev_prompts, on_prompt_click)
+    ui.button(
+        translator.translate("constitution_test.select_prompt_button", language),
+        on_click=dialog.open,
+    ).classes("principia-red-team-selector-button").props("flat no-caps")
 
 
 def _constitution_test_widget(
@@ -166,26 +266,6 @@ def _example_test_widget(
             with ui.element("div").classes("principia-example-content"):
                 ui.label(preview).classes("principia-example-user")
                 ui.label(example.example_hash).classes("principia-example-hash")
-
-
-def _red_team_prompt_widget(
-    language: str,
-    selected_prompt: str | None,
-    dev_prompts: list[DevElement],
-    on_prompt_click,
-) -> None:
-    dialog = _red_team_prompt_dialog(language, dev_prompts, on_prompt_click)
-    preview = selected_prompt or translator.translate(
-        "constitution_test.red_team_prompt",
-        language,
-    )
-
-    with (
-        ui.button(on_click=dialog.open)
-        .classes("principia-red-team-widget")
-        .props("flat no-caps")
-    ):
-        ui.label(preview).classes("principia-red-team-preview")
 
 
 def _red_team_prompt_dialog(

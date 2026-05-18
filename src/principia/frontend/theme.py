@@ -723,6 +723,50 @@ body,
   background: var(--principia-control-hover);
 }
 
+.principia-red-team-selector-button {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 18px;
+  border: 1px solid var(--principia-border);
+  border-radius: 6px;
+  color: var(--principia-text);
+  background: var(--principia-pane-muted);
+}
+
+.principia-red-team-selector-button:hover {
+  border-color: var(--principia-border-strong);
+  background: var(--principia-control-hover);
+}
+
+.principia-prompt-test-chat {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 14px;
+  max-height: min(60vh, 520px);
+  overflow-y: auto;
+  border: 1px solid var(--principia-border);
+  border-radius: 6px;
+  background: var(--principia-control);
+}
+
+.principia-prompt-test-action {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 14px;
+  border: 1px solid var(--principia-border-strong);
+  border-radius: 6px;
+  color: var(--principia-text);
+  background: var(--principia-pane-muted);
+}
+
+.principia-prompt-test-action:hover {
+  border-color: var(--principia-border-strong);
+  background: var(--principia-control-hover);
+}
+
 .principia-constitution-edit-dialog .q-dialog__inner {
   padding: 24px;
 }
