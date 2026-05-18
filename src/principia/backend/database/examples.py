@@ -9,6 +9,8 @@ class ExampleElement(BaseModel):
     example_hash: str
     user: str
     bot: str
+    critique: str
+    response: str
 
 
 class ExamplesFile(WorkspaceJsonFile[ExampleElement]):

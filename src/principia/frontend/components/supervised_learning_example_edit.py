@@ -35,6 +35,14 @@ def supervised_learning_example_edit(
                 label=translator.translate("example_edit.bot", language),
                 value=element.bot,
             ).classes("principia-example-edit-field")
+            critique = ui.textarea(
+                label=translator.translate("example_edit.critique", language),
+                value=element.critique,
+            ).classes("principia-example-edit-field")
+            response = ui.textarea(
+                label=translator.translate("example_edit.response", language),
+                value=element.response,
+            ).classes("principia-example-edit-field")
 
             with ui.row().classes("principia-example-edit-actions"):
                 ui.button(
@@ -50,6 +58,8 @@ def supervised_learning_example_edit(
                         element,
                         str(user.value or ""),
                         str(bot.value or ""),
+                        str(critique.value or ""),
+                        str(response.value or ""),
                     ),
                 ).classes(
                     "principia-example-edit-button principia-example-edit-save",
@@ -63,11 +73,15 @@ def _save_example(
     element: ExampleElement,
     user: str,
     bot: str,
+    critique: str,
+    response: str,
 ) -> None:
     updated_element = element.model_copy(
         update={
             "user": user,
             "bot": bot,
+            "critique": critique,
+            "response": response,
         },
     )
     payload = json.dumps(updated_element.model_dump())
@@ -107,6 +121,8 @@ def _empty_example_element() -> ExampleElement:
         example_hash=sha256(seed.encode("utf-8")).hexdigest(),
         user="",
         bot="",
+        critique="",
+        response="",
     )
 
 

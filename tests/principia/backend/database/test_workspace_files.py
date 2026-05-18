@@ -71,11 +71,15 @@ def test_examples_update_uses_example_hash(tmp_path: Path) -> None:
         example_hash="example-1",
         user="User message.",
         bot="Bot message.",
+        critique="Original critique.",
+        response="Original response.",
     )
     updated = ExampleElement(
         example_hash="example-1",
         user="Updated user message.",
         bot="Updated bot message.",
+        critique="Updated critique.",
+        response="Updated response.",
     )
 
     examples_file.update(original)

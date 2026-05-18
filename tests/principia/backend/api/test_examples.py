@@ -23,6 +23,8 @@ def test_read_examples_returns_elements(tmp_path: Path) -> None:
         example_hash="example-1",
         user="User message.",
         bot="Bot message.",
+        critique="Critique.",
+        response="Response.",
     )
     examples_file.update(element)
     client = create_client(tmp_path)
@@ -39,6 +41,8 @@ def test_update_examples_appends_new_element(tmp_path: Path) -> None:
         "example_hash": "example-1",
         "user": "User message.",
         "bot": "Bot message.",
+        "critique": "Critique.",
+        "response": "Response.",
     }
 
     response = client.put("/api/supervised/examples", json=payload)
@@ -57,6 +61,8 @@ def test_update_examples_replaces_matching_hash(tmp_path: Path) -> None:
             example_hash="example-1",
             user="Original user message.",
             bot="Original bot message.",
+            critique="Original critique.",
+            response="Original response.",
         )
     )
     client = create_client(tmp_path)
@@ -64,6 +70,8 @@ def test_update_examples_replaces_matching_hash(tmp_path: Path) -> None:
         "example_hash": "example-1",
         "user": "Updated user message.",
         "bot": "Updated bot message.",
+        "critique": "Updated critique.",
+        "response": "Updated response.",
     }
 
     response = client.put("/api/supervised/examples", json=payload)
@@ -80,11 +88,15 @@ def test_delete_examples_removes_matching_hash(tmp_path: Path) -> None:
         example_hash="example-keep",
         user="Keep user message.",
         bot="Keep bot message.",
+        critique="Keep critique.",
+        response="Keep response.",
     )
     delete = ExampleElement(
         example_hash="example-delete",
         user="Delete user message.",
         bot="Delete bot message.",
+        critique="Delete critique.",
+        response="Delete response.",
     )
     examples_file.update(keep)
     examples_file.update(delete)
@@ -103,6 +115,8 @@ def test_delete_examples_missing_hash_does_nothing(tmp_path: Path) -> None:
         example_hash="example-1",
         user="User message.",
         bot="Bot message.",
+        critique="Critique.",
+        response="Response.",
     )
     examples_file.update(element)
     client = create_client(tmp_path)
