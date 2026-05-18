@@ -1,6 +1,8 @@
 # Principia
 An interface to generate a Constitution to be used in Supervised Learning and Reinforcement Learning. Alongside generating the datasets for them. Based on Constitutional AI paper by Antropic.
 
+The pages documentation can be found on [Github Pages](https://benoitfaure.github.io/principia/)
+
 ## Installation
  
 ### Option 1 — Dev container (recommended)
