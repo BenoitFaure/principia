@@ -79,6 +79,7 @@ def _save_constitution(
         },
     )
     payload = json.dumps(updated_element.model_dump())
+    hash_value = json.dumps(updated_element.constitution_hash)
     dialog.close()
     ui.run_javascript(
         f"""
@@ -88,6 +89,7 @@ def _save_constitution(
           body: JSON.stringify({payload}),
         }}).then((response) => {{
           if (!response.ok) throw new Error('Failed to save constitution');
+          localStorage.setItem('principia_selected_constitution', {hash_value});
           window.location.reload();
         }});
         """,

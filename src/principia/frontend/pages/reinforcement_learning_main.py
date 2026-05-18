@@ -17,20 +17,15 @@ def reinforcement_learning_main() -> None:
     base_two_pane_layout(
         language,
         LearningStage.REINFORCEMENT,
-        left_content=_empty_workspace,
-        right_content=_constitution_workspace,
+        left_content=_upcoming_feature_workspace,
     )
 
 
-def _empty_workspace(language: str) -> None:
-    pass
-
-
-def _constitution_workspace(language: str) -> None:
-    ui.label(
-        translator.translate(
-            "reinforcement_learning_main.constitution_title",
-            language,
-        ),
-    ).classes("principia-window-title")
-    ui.element("ul").classes("principia-constitution-list")
+def _upcoming_feature_workspace(language: str) -> None:
+    with ui.element("div").classes("principia-placeholder"):
+        ui.label(
+            translator.translate(
+                "reinforcement_learning_main.upcoming_feature",
+                language,
+            ),
+        ).classes("principia-window-title")

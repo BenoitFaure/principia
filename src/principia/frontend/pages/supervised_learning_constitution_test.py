@@ -424,7 +424,7 @@ def _example_select_dialog(
             _example_detail_pane(language, previewed_example, dialog, add_previewed)
 
     with ui.dialog().classes("principia-red-team-dialog") as dialog:
-        with ui.card().classes("principia-red-team-card"):
+        with ui.card().classes("principia-example-select-card"):
             select_dialog_content(language, dialog)
 
     return dialog

@@ -601,6 +601,18 @@ body,
   gap: 18px;
 }
 
+.principia-example-select-card {
+  width: min(1480px, calc(100vw - 24px));
+  max-width: none;
+  border: 1px solid var(--principia-border-strong);
+  border-radius: 8px;
+  background: var(--principia-pane);
+  color: var(--principia-text);
+  box-shadow: var(--principia-shadow);
+  padding: 24px;
+  gap: 18px;
+}
+
 .principia-red-team-title {
   color: var(--principia-text);
   font-size: 1.25rem;

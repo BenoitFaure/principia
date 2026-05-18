@@ -27,7 +27,10 @@ def supervised_learning_main() -> None:
 
 
 def _empty_workspace(language: str) -> None:
-    pass
+    with ui.element("div").classes("principia-placeholder"):
+        ui.label(
+            translator.translate("home.left.placeholder", language),
+        ).classes("principia-window-title")
 
 
 def _constitution_workspace(language: str) -> None:
