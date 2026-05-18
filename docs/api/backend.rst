@@ -1,4 +1,4 @@
-Backend API
+Backend
 ===========
 
 The backend exports a single FastAPI router from
