@@ -361,9 +361,18 @@ body,
   width: 100%;
   justify-content: flex-start;
   border-radius: 0;
-  font-size: 1rem;
+  font-size: clamp(1.3rem, 2.4vw, 2rem);
   font-weight: 650;
-  padding: 0 0 18px;
+  opacity: 0.42;
+  padding: 0 0 22px;
+}
+
+.principia-edit-navigation-title-enabled {
+  opacity: 1;
+}
+
+.principia-edit-navigation-title-enabled:hover {
+  background: var(--principia-control-hover);
 }
 
 .principia-constitution-stack {
@@ -427,12 +436,6 @@ body,
   background: var(--principia-control-hover);
 }
 
-.principia-link-widget-selected {
-  border-color: var(--principia-border-strong);
-  background: var(--principia-control-hover);
-  box-shadow: inset 0 0 0 1px var(--principia-border-strong);
-}
-
 .principia-constitution-widget .q-btn__content {
   width: 100%;
   justify-content: flex-start;
@@ -478,6 +481,12 @@ body,
 .principia-example-widget .q-btn__content {
   width: 100%;
   justify-content: flex-start;
+}
+
+.principia-link-widget-selected {
+  border-color: var(--principia-border-strong);
+  background: var(--principia-control-hover);
+  box-shadow: inset 0 0 0 1px var(--principia-border-strong);
 }
 
 .principia-example-content {

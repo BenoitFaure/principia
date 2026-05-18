@@ -104,7 +104,6 @@ def supervised_learning_constitution_edit_page() -> None:
 
     @ui.refreshable
     def constitution_workspace(language: str) -> None:
-        _test_navigation(language)
         ui.label(
             translator.translate(
                 "constitution_link.constitution_title",
@@ -122,8 +121,14 @@ def supervised_learning_constitution_edit_page() -> None:
                     select_constitution,
                 )
 
+            create_dialog = constitution_edit_dialog(language, None)
+            ui.button("+", on_click=create_dialog.open).classes(
+                "principia-constitution-add",
+            ).props("flat")
+
     @ui.refreshable
     def examples_workspace(language: str) -> None:
+        _test_navigation(language, selected_constitution_hash is not None)
         ui.label(
             translator.translate("constitution_link.examples_title", language),
         ).classes("principia-window-title")
@@ -152,10 +157,16 @@ def supervised_learning_constitution_edit_page() -> None:
     )
 
 
-def _test_navigation(language: str) -> None:
-    ui.button(
+def _test_navigation(language: str, enabled: bool) -> None:
+    button = ui.button(
         translator.translate("constitution_link.test_navigation", language),
-    ).classes("principia-edit-navigation-title").props("flat no-caps")
+    ).classes(
+        "principia-edit-navigation-title"
+        f" {'principia-edit-navigation-title-enabled' if enabled else ''}",
+    )
+    button.props("flat no-caps")
+    if not enabled:
+        button.props("disable")
 
 
 def _constitution_link_widget(
