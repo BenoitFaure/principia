@@ -53,10 +53,8 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
     model_state = {"value": DEFAULT_MODEL}
 
     ui.run_javascript("""
-      document.addEventListener('visibilitychange', function() {
-        if (document.visibilityState === 'hidden') {
-          fetch('/api/chat/prompt-test', {method: 'DELETE'}).catch(() => {});
-        }
+      window.addEventListener('pagehide', function() {
+        fetch('/api/chat/prompt-test', {method: 'DELETE', keepalive: true}).catch(() => {});
       });
     """)
 
