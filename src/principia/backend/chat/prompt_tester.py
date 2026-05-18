@@ -1,3 +1,5 @@
+"""Prompt-test chat logic: drives critique/response cycles against a constitution rule."""
+
 from typing import Protocol
 
 from principia.backend.database import ConstitutionElement, DevElement, ExampleElement
@@ -10,12 +12,30 @@ from principia.services.openai_provider import (
 
 
 class ConversationProvider(Protocol):
+    """Structural type for any object that can run a chat completion."""
+
     def conversation(
         self, conversation_input: ConversationInput
     ) -> ConversationOutput: ...
 
 
 class PromptTestChat:
+    """Stateful chat session for testing one constitution rule against a dev prompt.
+
+    Parameters
+    ----------
+    dev_element : DevElement
+        The red-team user/bot exchange to critique.
+    constitution_element : ConstitutionElement
+        The rule providing critique and response prompts.
+    examples : list[ExampleElement]
+        Few-shot critique/response examples passed to the model.
+    provider : ConversationProvider
+        LLM backend. Defaults to the global ``openai_provider``.
+    model : str
+        Model name forwarded to the provider.
+    """
+
     def __init__(
         self,
         *,
@@ -37,14 +57,17 @@ class PromptTestChat:
         self._response_message_index: int | None = None
 
     def conversation(self) -> list[ConversationMessage]:
+        """Return a copy of the current conversation."""
         return list(self._conversation)
 
     def critique(self) -> str | None:
+        """Return the current critique text, or ``None`` if not yet generated."""
         if self._critique_message_index is None:
             return None
         return self._conversation[self._critique_message_index].content
 
     def update_critique(self, critique: str) -> None:
+        """Replace the current critique in-place and clear any stale response."""
         if self._critique_message_index is None:
             msg = "Cannot update critique before generating one."
             raise RuntimeError(msg)
@@ -56,6 +79,7 @@ class PromptTestChat:
         self._clear_response_after_updated_critique()
 
     def generate_critique(self) -> str:
+        """Send the critique prompt and return the model's critique text."""
         critique = self._send_user_message(self._initial_critique_prompt())
         self._critique_message_index = len(self._conversation) - 1
         self._response_prompt_index = None
@@ -63,12 +87,14 @@ class PromptTestChat:
         return critique
 
     def generate_response(self) -> str:
+        """Send the response prompt and return the model's revised response text."""
         self._response_prompt_index = len(self._conversation)
         response = self._send_user_message(self._constitution_element.response_prompt)
         self._response_message_index = len(self._conversation) - 1
         return response
 
     def step(self) -> list[ConversationMessage]:
+        """Advance by one step (critique → response → critique → …) and return the conversation."""
         if self._step_count == 0:
             self.generate_critique()
         elif self._step_count % 2 == 1:
@@ -131,6 +157,7 @@ def create_prompt_test_chat(
     provider: ConversationProvider = openai_provider,
     model: str = "gpt-4o-mini",
 ) -> PromptTestChat:
+    """Construct and return a ``PromptTestChat``."""
     return PromptTestChat(
         dev_element=dev_element,
         constitution_element=constitution_element,

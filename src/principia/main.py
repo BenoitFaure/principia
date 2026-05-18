@@ -1,4 +1,5 @@
-# src/principia/main.py
+"""Application entry point: mounts the API router and starts NiceGUI."""
+
 import os
 
 from nicegui import app, ui
@@ -8,7 +9,8 @@ from principia.frontend.pages import register_pages
 from principia.services.translator import FALLBACK_LANGUAGE, translator
 
 
-def main():
+def main() -> None:
+    """Mount the FastAPI router and start the NiceGUI server."""
     app.include_router(router, prefix="/api")
     register_pages()
 

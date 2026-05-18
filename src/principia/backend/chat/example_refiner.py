@@ -1,3 +1,5 @@
+"""Example-refinement chat: wraps PromptTestChat to iterate on a training example."""
+
 from principia.backend.database import ConstitutionElement, DevElement, ExampleElement
 from principia.services.openai_provider import (
     ConversationInput,
@@ -9,6 +11,22 @@ from .prompt_tester import ConversationProvider, PromptTestChat
 
 
 class ExampleRefinementChat:
+    """Chat session for refining a training example via guided critique/response.
+
+    Parameters
+    ----------
+    example : ExampleElement
+        The training example to refine.
+    constitution_element : ConstitutionElement
+        Rule used to guide the critique.
+    examples : list[ExampleElement]
+        Few-shot examples passed to the underlying prompt-test chat.
+    provider : ConversationProvider
+        LLM backend. Defaults to the global ``openai_provider``.
+    model : str
+        Model name forwarded to the provider.
+    """
+
     def __init__(
         self,
         *,
@@ -32,9 +50,11 @@ class ExampleRefinementChat:
         self._response_message_index: int | None = None
 
     def conversation(self) -> list[ConversationMessage]:
+        """Return a copy of the current conversation."""
         return list(self._conversation)
 
     def get_critique(self) -> ConversationMessage:
+        """Generate and return a critique message for the loaded example."""
         critique = self._prompt_test_chat.generate_critique()
         message = ConversationMessage(role="assistant", content=critique)
         self._conversation.append(message)
@@ -43,6 +63,7 @@ class ExampleRefinementChat:
         return message
 
     def update_critique(self, critique: str) -> ConversationMessage:
+        """Replace the current critique and clear any stale response."""
         self._prompt_test_chat.update_critique(critique)
         message = ConversationMessage(role="assistant", content=critique)
 
@@ -56,6 +77,7 @@ class ExampleRefinementChat:
         return message
 
     def get_response(self) -> ConversationMessage:
+        """Generate a revised response and return it, auto-generating a critique if needed."""
         critique = self._prompt_test_chat.critique()
         if critique is None:
             critique = self.get_critique().content
@@ -70,6 +92,7 @@ class ExampleRefinementChat:
         return message
 
     def message(self, content: str) -> ConversationMessage:
+        """Send a free-form user message and return the assistant reply."""
         self._conversation.append(ConversationMessage(role="user", content=content))
         output = self._provider.conversation(
             ConversationInput(messages=self.conversation(), model=self._model)
@@ -98,6 +121,7 @@ def create_example_refinement_chat(
     provider: ConversationProvider = openai_provider,
     model: str = "gpt-4o-mini",
 ) -> ExampleRefinementChat:
+    """Construct and return an ``ExampleRefinementChat``."""
     return ExampleRefinementChat(
         example=example,
         constitution_element=constitution_element,
