@@ -64,7 +64,12 @@ principia
 ```
  
 This starts Principia and opens it in your browser at `http://localhost:8080`.
- 
+
+If the app acts up, try the following command to bypass some python path shenanigans:
+``` bash
+uv run python -m src.principia.main
+```
+
 ---
 
 ### Linting and formatting
