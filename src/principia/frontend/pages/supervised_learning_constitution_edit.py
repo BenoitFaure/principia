@@ -145,7 +145,7 @@ def supervised_learning_constitution_edit_page() -> None:
     @ui.refreshable
     def examples_workspace(language: str) -> None:
         selected = selected_constitution()
-        _test_navigation(language, selected is not None)
+        _test_navigation(language, selected_constitution_hash)
         ui.label(
             translator.translate("constitution_link.examples_title", language),
         ).classes("principia-window-title")
@@ -181,15 +181,26 @@ def supervised_learning_constitution_edit_page() -> None:
     )
 
 
-def _test_navigation(language: str, enabled: bool) -> None:
+def _test_navigation(language: str, constitution_hash: str | None) -> None:
+    def navigate_to_test() -> None:
+        if constitution_hash is None:
+            return
+
+        target_href = f"/supervised/constitution/test/{constitution_hash}"
+        ui.run_javascript(
+            f"window.location.href = {json.dumps(target_href)}",
+        )
+
+    button_classes = "principia-edit-navigation-title"
+    if constitution_hash is not None:
+        button_classes += " principia-edit-navigation-title-enabled"
+
     button = ui.button(
         translator.translate("constitution_link.test_navigation", language),
-    ).classes(
-        "principia-edit-navigation-title"
-        f" {'principia-edit-navigation-title-enabled' if enabled else ''}",
-    )
+        on_click=navigate_to_test if constitution_hash is not None else None,
+    ).classes(button_classes)
     button.props("flat no-caps")
-    if not enabled:
+    if constitution_hash is None:
         button.props("disable")
 
 
@@ -206,7 +217,13 @@ def _constitution_link_widget(
         language,
     )
     marker = "💾" if selected and dirty else "●" if selected else "○"
-    marker_class = " principia-link-marker-dirty" if selected and dirty else ""
+    marker_class = (
+        " principia-link-marker-dirty"
+        if selected and dirty
+        else " principia-link-marker-selected"
+        if selected
+        else ""
+    )
     widget_class = " principia-link-widget-selected" if selected else ""
 
     with ui.row().classes("principia-link-row"):
@@ -242,7 +259,9 @@ def _example_link_widget(
         language,
     )
     marker = "●" if selected else "○"
-    marker_class = "" if critique_selected else " principia-link-marker-muted"
+    marker_class = " principia-link-marker-selected" if selected else ""
+    if not critique_selected:
+        marker_class += " principia-link-marker-muted"
     widget_class = " principia-link-widget-selected" if selected else ""
 
     with ui.row().classes("principia-link-row"):

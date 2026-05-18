@@ -70,8 +70,29 @@ class WorkspaceJsonFile[ModelT: BaseModel]:
 
     def _ensure_file_exists(self) -> None:
         self._path.parent.mkdir(parents=True, exist_ok=True)
-        if not self._path.exists():
-            self._path.write_text("[]\n", encoding="utf-8")
+        if self._path.exists():
+            return
+
+        jsonl_path = self._path.with_suffix(".jsonl")
+        if jsonl_path.exists():
+            self._write_all(self._read_jsonl(jsonl_path))
+            return
+
+        self._path.write_text("[]\n", encoding="utf-8")
+
+    def _read_jsonl(self, jsonl_path: Path) -> list[ModelT]:
+        elements: list[ModelT] = []
+        with jsonl_path.open(encoding="utf-8") as jsonl_file:
+            for line in jsonl_file:
+                stripped_line = line.strip()
+                if not stripped_line:
+                    continue
+
+                elements.append(
+                    self._model_type.model_validate(json.loads(stripped_line)),
+                )
+
+        return elements
 
     @staticmethod
     def _default_workspace_root() -> Path:
