@@ -22,6 +22,7 @@ from principia.frontend.components.supervised_learning_constitution_edit import 
 )
 from principia.frontend.language import LearningStage, get_user_language
 from principia.frontend.theme import apply_theme
+from principia.services.open_ai.models import AVAILABLE_MODELS, DEFAULT_MODEL
 from principia.services.translator import translator
 
 
@@ -49,12 +50,11 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
     red_team_element: DevElement | None = None
     conversation_messages: list[dict] = []
     loading: bool = False
+    model_state = {"value": DEFAULT_MODEL}
 
     ui.run_javascript("""
-      document.addEventListener('visibilitychange', function() {
-        if (document.visibilityState === 'hidden') {
-          fetch('/api/chat/prompt-test', {method: 'DELETE'}).catch(() => {});
-        }
+      window.addEventListener('pagehide', function() {
+        fetch('/api/chat/prompt-test', {method: 'DELETE', keepalive: true}).catch(() => {});
       });
     """)
 
@@ -99,7 +99,13 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
           setTimeout(() => {
             const el = document.querySelector('.principia-prompt-test-chat');
             if (el) el.scrollTop = el.scrollHeight;
-          }, 50);
+            document.querySelectorAll('[id^="pcbt-"]').forEach(function(btn) {
+              var bubble = document.getElementById(btn.id.replace('pcbt-', 'pcb-'));
+              if (bubble && bubble.scrollHeight <= bubble.clientHeight + 4) {
+                btn.style.display = 'none';
+              }
+            });
+          }, 80);
         """)
 
     def do_reset() -> None:
@@ -124,6 +130,7 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
             "dev_element": red_team_element.model_dump(),
             "constitution_element": constitution.model_dump(),
             "examples": [e.model_dump() for e in examples_for_init],
+            "model": model_state["value"],
         }
         try:
             await ui.run_javascript(
@@ -245,6 +252,13 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
             "flat no-caps",
         )
 
+        ui.select(
+            AVAILABLE_MODELS,
+            value=model_state["value"],
+            label=translator.translate("constitution_test.teacher_model", language),
+            on_change=lambda e: model_state.update({"value": e.value}),
+        ).classes("principia-model-selector")
+
         _red_team_selector_widget(language, dev_prompts, select_red_team_prompt)
 
         if red_team_element is not None:
@@ -257,11 +271,11 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
             )
 
             with ui.element("div").classes("principia-prompt-test-chat"):
-                ui.label(red_team_element.user).classes(
-                    "principia-chat-bubble principia-chat-bubble-user"
+                _collapsible_chat_bubble(
+                    red_team_element.user, "principia-chat-bubble-user", "dev-u"
                 )
-                ui.label(red_team_element.bot).classes(
-                    "principia-chat-bubble principia-chat-bubble-bot"
+                _collapsible_chat_bubble(
+                    red_team_element.bot, "principia-chat-bubble-bot", "dev-b"
                 )
                 for i, msg in enumerate(conversation_messages):
                     if i == 1:
@@ -284,15 +298,23 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
                         if msg["role"] == "user"
                         else "principia-chat-bubble-bot"
                     )
-                    ui.label(msg["content"]).classes(
-                        f"principia-chat-bubble {bubble_class}"
-                    )
+                    _collapsible_chat_bubble(msg["content"], bubble_class, f"conv-{i}")
                 if loading:
                     ui.label(
                         translator.translate(
                             "constitution_test.loading_message", language
                         )
                     ).classes("principia-prompt-test-loading")
+            ui.run_javascript("""
+              setTimeout(function() {
+                document.querySelectorAll('[id^="pcbt-"]').forEach(function(btn) {
+                  var bubble = document.getElementById(btn.id.replace('pcbt-', 'pcb-'));
+                  if (bubble && bubble.scrollHeight <= bubble.clientHeight + 4) {
+                    btn.style.display = 'none';
+                  }
+                });
+              }, 80);
+            """)
 
             if len(conversation_messages) == 0:
                 ui.button(
@@ -316,6 +338,38 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
         right_content=red_team_workspace,
         stage_button_href="/",
     )
+
+
+def _collapsible_chat_bubble(content: str, extra_class: str, uid: str) -> None:
+    is_user = "user" in extra_class
+    wrapper_class = (
+        "principia-chat-bubble-wrapper-user"
+        if is_user
+        else "principia-chat-bubble-wrapper-bot"
+    )
+    with ui.element("div").classes(f"principia-chat-bubble-wrapper {wrapper_class}"):
+        ui.label(content).classes(
+            f"principia-chat-bubble {extra_class} principia-chat-bubble-collapsed"
+        ).props(f'id="pcb-{uid}"')
+        (
+            ui.button(
+                "▼",
+                on_click=lambda: ui.run_javascript(
+                    f"""
+                    (function() {{
+                      var b = document.getElementById('pcb-{uid}');
+                      var btn = document.getElementById('pcbt-{uid}');
+                      var collapsed = b.classList.contains('principia-chat-bubble-collapsed');
+                      b.classList.toggle('principia-chat-bubble-collapsed', !collapsed);
+                      var sp = btn && btn.querySelector('.q-btn__content > span');
+                      if (sp) sp.textContent = collapsed ? '▲' : '▼';
+                    }})();
+                    """
+                ),
+            )
+            .classes("principia-chat-bubble-toggle")
+            .props(f'flat id="pcbt-{uid}"')
+        )
 
 
 def _red_team_selector_widget(

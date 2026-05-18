@@ -717,6 +717,35 @@ body,
   background: var(--principia-pane-muted);
 }
 
+.principia-chat-bubble-collapsed {
+  max-height: calc(10 * 1.45rem + 24px);
+  overflow: hidden;
+}
+
+.principia-chat-bubble-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.principia-chat-bubble-wrapper-user {
+  align-items: flex-end;
+}
+.principia-chat-bubble-wrapper-bot {
+  align-items: flex-start;
+}
+
+.principia-chat-bubble-toggle {
+  min-height: 20px;
+  height: 20px;
+  font-size: 0.7rem;
+  opacity: 0.45;
+  margin-top: 2px;
+  padding: 0 8px;
+}
+.principia-chat-bubble-toggle:hover {
+  opacity: 0.9;
+}
+
 .principia-red-team-empty {
   color: var(--principia-text);
   opacity: 0.68;
@@ -829,6 +858,12 @@ body,
   line-height: 1.4;
   overflow-wrap: anywhere;
   padding: 6px 0;
+}
+
+.principia-model-selector {
+  width: 100%;
+  margin-top: 8px;
+  color: var(--principia-text);
 }
 
 .principia-constitution-edit-dialog .q-dialog__inner {

@@ -24,6 +24,8 @@
   "constitution_test.reset_button": "Réinitialiser",
   "constitution_test.example_select_title": "Ajouter un exemple",
   "constitution_test.example_select_action": "Ajouter",
+  "constitution_test.teacher_model": "Modèle enseignant",
+  "example_edit.helper_model": "Modèle assistant",
   "example_edit.bot": "Réponse du bot",
   "example_edit.chat_not_initialized": "Créez une critique avant de discuter.",
   "example_edit.chat_placeholder": "Demander comment améliorer cet exemple...",

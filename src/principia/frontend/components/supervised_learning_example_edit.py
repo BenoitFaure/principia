@@ -12,6 +12,7 @@ from urllib.parse import quote
 from nicegui import ui
 
 from principia.backend.database import ConstitutionElement, ExampleElement
+from principia.services.open_ai.models import AVAILABLE_MODELS, DEFAULT_MODEL
 from principia.services.translator import translator
 
 
@@ -24,6 +25,7 @@ def supervised_learning_example_edit(
     """Build an edit dialog for an existing or new example element."""
     element = example or _empty_example_element()
     context_examples = examples or []
+    model_state = {"value": DEFAULT_MODEL}
     chat_state = {
         "initialized": False,
         "critique_ready": False,
@@ -121,6 +123,14 @@ def supervised_learning_example_edit(
                     ui.label(
                         translator.translate("example_edit.refinement_title", language),
                     ).classes("principia-example-chat-title")
+                    ui.select(
+                        AVAILABLE_MODELS,
+                        value=model_state["value"],
+                        label=translator.translate(
+                            "example_edit.helper_model", language
+                        ),
+                        on_change=lambda e: model_state.update({"value": e.value}),
+                    ).classes("principia-model-selector")
                     if constitution is None:
                         ui.label(
                             translator.translate(
@@ -152,6 +162,7 @@ def supervised_learning_example_edit(
                                 chat_history,
                                 chat_state,
                                 language,
+                                model_state,
                             ),
                         ).classes("principia-example-chat-send").props("flat")
 
@@ -174,6 +185,7 @@ def supervised_learning_example_edit(
                                     chat_state,
                                     create_response_button,
                                     language,
+                                    model_state,
                                 ),
                             )
                             .classes("principia-example-chat-action")
@@ -196,6 +208,7 @@ def supervised_learning_example_edit(
                                     chat_history,
                                     chat_state,
                                     language,
+                                    model_state,
                                 ),
                             )
                             .classes("principia-example-chat-action")
@@ -281,6 +294,7 @@ async def _create_critique(
     chat_state: dict[str, object],
     create_response_button: Any,
     language: str,
+    model_state: dict[str, str],
 ) -> None:
     if constitution is None:
         ui.notify(
@@ -301,6 +315,7 @@ async def _create_critique(
         constitution,
         examples,
         chat_state,
+        model_state,
     )
     message = await _api_json("POST", "/api/chat/example-refinement/critique")
     content = str(message["content"])
@@ -323,6 +338,7 @@ async def _create_response(
     chat_history: Any,
     chat_state: dict[str, object],
     language: str,
+    model_state: dict[str, str],
 ) -> None:
     if constitution is None:
         ui.notify(
@@ -341,6 +357,7 @@ async def _create_response(
         constitution,
         examples,
         chat_state,
+        model_state,
     )
     current_critique = str(critique.value or "").strip()
     if not current_critique:
@@ -378,6 +395,7 @@ async def _send_chat_message(
     chat_history: Any,
     chat_state: dict[str, object],
     language: str,
+    model_state: dict[str, str],
 ) -> None:
     message = str(message_input.value or "").strip()
     if not message:
@@ -397,6 +415,7 @@ async def _send_chat_message(
         constitution,
         examples,
         chat_state,
+        model_state,
     )
 
     message_input.value = ""
@@ -423,8 +442,11 @@ async def _ensure_refinement_chat(
     constitution: ConstitutionElement,
     examples: list[ExampleElement],
     chat_state: dict[str, object],
+    model_state: dict[str, str],
 ) -> None:
-    source_key = _chat_source_key(element, user, bot, constitution, examples)
+    source_key = _chat_source_key(
+        element, user, bot, constitution, examples, model_state
+    )
     if chat_state["initialized"] and chat_state["source_key"] == source_key:
         return
 
@@ -439,6 +461,7 @@ async def _ensure_refinement_chat(
             for example in examples
             if example.example_hash != element.example_hash
         ],
+        "model": model_state["value"],
     }
     await _api_json("POST", "/api/chat/example-refinement/init", payload)
     chat_state["initialized"] = True
@@ -462,6 +485,7 @@ def _chat_source_key(
     bot: Any,
     constitution: ConstitutionElement,
     examples: list[ExampleElement],
+    model_state: dict[str, str],
 ) -> str:
     return json.dumps(
         {
@@ -470,6 +494,7 @@ def _chat_source_key(
             "bot": str(bot.value or ""),
             "constitution": constitution.model_dump(),
             "examples": [example.model_dump() for example in examples],
+            "model": model_state["value"],
         },
         sort_keys=True,
     )
