@@ -30,6 +30,94 @@ def test_files_are_created_as_empty_lists(tmp_path: Path) -> None:
     assert dev_file.path.read_text(encoding="utf-8") == "[]\n"
 
 
+def test_constitution_file_converts_jsonl_when_json_is_missing(
+    tmp_path: Path,
+) -> None:
+    jsonl_path = tmp_path / "supervised" / "constitution.jsonl"
+    jsonl_path.parent.mkdir(parents=True)
+    element = ConstitutionElement(
+        constitution_hash="constitution-1",
+        critique_prompt="Critique this response.",
+        response_prompt="Improve this response.",
+        example_hashes=["example-1"],
+    )
+    jsonl_path.write_text(json.dumps(element.model_dump()) + "\n", encoding="utf-8")
+
+    constitution_file = ConstitutionFile(workspace_root=tmp_path)
+
+    assert constitution_file.read() == [element]
+    assert constitution_file.path.exists()
+    assert json.loads(constitution_file.path.read_text(encoding="utf-8")) == [
+        element.model_dump(),
+    ]
+
+
+def test_examples_file_converts_jsonl_when_json_is_missing(tmp_path: Path) -> None:
+    jsonl_path = tmp_path / "supervised" / "examples.jsonl"
+    jsonl_path.parent.mkdir(parents=True)
+    element = ExampleElement(
+        example_hash="example-1",
+        user="User message.",
+        bot="Bot message.",
+        critique="Critique.",
+        response="Response.",
+    )
+    jsonl_path.write_text(json.dumps(element.model_dump()) + "\n", encoding="utf-8")
+
+    examples_file = ExamplesFile(workspace_root=tmp_path)
+
+    assert examples_file.read() == [element]
+    assert examples_file.path.exists()
+
+
+def test_dev_file_converts_jsonl_when_json_is_missing(tmp_path: Path) -> None:
+    jsonl_path = tmp_path / "supervised" / "dev.jsonl"
+    jsonl_path.parent.mkdir(parents=True)
+    element = DevElement(user="User message.", bot="Bot message.")
+    jsonl_path.write_text(json.dumps(element.model_dump()) + "\n", encoding="utf-8")
+
+    dev_file = DevFile(workspace_root=tmp_path)
+
+    assert dev_file.read() == [element]
+    assert dev_file.path.exists()
+
+
+def test_json_file_takes_precedence_over_jsonl(tmp_path: Path) -> None:
+    supervised_path = tmp_path / "supervised"
+    supervised_path.mkdir(parents=True)
+    json_path = supervised_path / "dev.json"
+    jsonl_path = supervised_path / "dev.jsonl"
+    json_element = DevElement(user="JSON user message.", bot="JSON bot message.")
+    jsonl_element = DevElement(user="JSONL user message.", bot="JSONL bot message.")
+    json_path.write_text(
+        json.dumps([json_element.model_dump()]) + "\n", encoding="utf-8"
+    )
+    jsonl_path.write_text(
+        json.dumps(jsonl_element.model_dump()) + "\n", encoding="utf-8"
+    )
+
+    dev_file = DevFile(workspace_root=tmp_path)
+
+    assert dev_file.read() == [json_element]
+    assert json.loads(json_path.read_text(encoding="utf-8")) == [
+        json_element.model_dump(),
+    ]
+
+
+def test_jsonl_conversion_ignores_blank_lines(tmp_path: Path) -> None:
+    jsonl_path = tmp_path / "supervised" / "dev.jsonl"
+    jsonl_path.parent.mkdir(parents=True)
+    element = DevElement(user="User message.", bot="Bot message.")
+    jsonl_path.write_text(
+        f"\n{json.dumps(element.model_dump())}\n\n",
+        encoding="utf-8",
+    )
+
+    dev_file = DevFile(workspace_root=tmp_path)
+
+    assert dev_file.read() == [element]
+
+
 def test_constitution_update_appends_new_element(tmp_path: Path) -> None:
     constitution_file = ConstitutionFile(workspace_root=tmp_path)
     element = ConstitutionElement(
