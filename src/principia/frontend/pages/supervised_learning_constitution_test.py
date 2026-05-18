@@ -22,6 +22,7 @@ from principia.frontend.components.supervised_learning_constitution_edit import 
 )
 from principia.frontend.language import LearningStage, get_user_language
 from principia.frontend.theme import apply_theme
+from principia.services.open_ai.models import AVAILABLE_MODELS, DEFAULT_MODEL
 from principia.services.translator import translator
 
 
@@ -49,6 +50,7 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
     red_team_element: DevElement | None = None
     conversation_messages: list[dict] = []
     loading: bool = False
+    model_state = {"value": DEFAULT_MODEL}
 
     ui.run_javascript("""
       document.addEventListener('visibilitychange', function() {
@@ -124,6 +126,7 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
             "dev_element": red_team_element.model_dump(),
             "constitution_element": constitution.model_dump(),
             "examples": [e.model_dump() for e in examples_for_init],
+            "model": model_state["value"],
         }
         try:
             await ui.run_javascript(
@@ -244,6 +247,13 @@ def supervised_learning_constitution_test_page(constitution_hash: str) -> None:
         ).props(
             "flat no-caps",
         )
+
+        ui.select(
+            AVAILABLE_MODELS,
+            value=model_state["value"],
+            label=translator.translate("constitution_test.teacher_model", language),
+            on_change=lambda e: model_state.update({"value": e.value}),
+        ).classes("principia-model-selector")
 
         _red_team_selector_widget(language, dev_prompts, select_red_team_prompt)
 

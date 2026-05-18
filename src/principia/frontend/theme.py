@@ -831,6 +831,12 @@ body,
   padding: 6px 0;
 }
 
+.principia-model-selector {
+  width: 100%;
+  margin-top: 8px;
+  color: var(--principia-text);
+}
+
 .principia-constitution-edit-dialog .q-dialog__inner {
   padding: 24px;
 }
